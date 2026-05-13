@@ -1,0 +1,56 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "tv.tootie/rustifi",
+  "title": "UniFi MCP",
+  "description": "Read-only MCP server for Ubiquiti UniFi networks — query connected clients, devices, WiFi configs, alarms, and site health.",
+  "repository": {
+    "url": "https://github.com/jmagar/rustifi",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "oci",
+      "identifier": "ghcr.io/jmagar/rustifi:0.1.0",
+      "version": "0.1.0",
+      "environmentVariables": [
+        {
+          "name": "UNIFI_URL",
+          "description": "Base URL of your UniFi controller, e.g. https://192.168.1.1 or https://unifi.local.",
+          "isRequired": true,
+          "isSecret": false
+        },
+        {
+          "name": "UNIFI_API_KEY",
+          "description": "API key for X-API-KEY header authentication. Generate in UniFi OS → Settings → Admins & Users → API Keys.",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "UNIFI_SITE",
+          "description": "UniFi site name. Defaults to 'default'. Change only if you have multiple sites configured.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "UNIFI_SKIP_TLS_VERIFY",
+          "description": "Skip TLS certificate verification for the UniFi controller. Defaults to true since UniFi uses self-signed certificates.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "UNIFI_MCP_TOKEN",
+          "description": "Static bearer token for MCP endpoint authentication. Generate with `openssl rand -hex 32`.",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://rustifi.tootie.tv/mcp"
+    }
+  ]
+}
