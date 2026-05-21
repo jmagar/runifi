@@ -1,0 +1,49 @@
+name: rustifi
+
+x-common-service: &common-service
+  networks:
+    - jakenet
+  restart: unless-stopped
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  ulimits:
+    nofile:
+      soft: 65535
+      hard: 65535
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+      compress: "true"
+
+services:
+  unifi-mcp:
+    <<: *common-service
+    image: ghcr.io/jmagar/rustifi:${RUSTIFI_VERSION:-latest}
+    container_name: unifi-mcp
+    # entrypoint.sh runs as root and drops to 1000:1000 via gosu.
+    # Do not set user: here; entrypoint needs root to chown /data.
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "${UNIFI_MCP_PORT:-40030}:40030/tcp"
+    volumes:
+      - ${HOME}/.unifi:/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:40030/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+
+networks:
+  jakenet:
+    name: ${DOCKER_NETWORK:-jakenet}
+    external: true
