@@ -59,6 +59,7 @@ anyhow = "1"
 
 # Paths
 dirs = "5"
+dotenvy = "0.15.7"
 
 [features]
 test-support = []
