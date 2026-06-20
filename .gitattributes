@@ -1,7 +1,1 @@
-# Binary plugin distributions — tracked via Git LFS
-bin/* filter=lfs diff=lfs merge=lfs -text
-plugins/*/bin/* filter=lfs diff=lfs merge=lfs -text
-bin/runifi filter=lfs diff=lfs merge=lfs -text
-bin/runifi.exe filter=lfs diff=lfs merge=lfs -text
-*.tar.gz filter=lfs diff=lfs merge=lfs -text
-*.zip filter=lfs diff=lfs merge=lfs -text
+# Git attributes for rustifi. Binary artifacts are local build outputs and are ignored.
