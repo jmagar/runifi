@@ -2,8 +2,11 @@ use std::{collections::BTreeMap, path::Path};
 
 use anyhow::{Context, Result, bail};
 use reqwest::blocking::Client;
+use rustifi::api::{official::OfficialNetworkApi, path};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
+
+const CONNECTOR_PREFIXES: &[&str] = &["/proxy/network/integration/", "/proxy/protect/integration/"];
 
 #[derive(Debug, Deserialize)]
 pub struct OfficialInventory {
@@ -121,9 +124,18 @@ fn resolved_base_url(raw_url: &str) -> Result<String> {
 }
 
 pub fn official_path(cfg: &Config, template: &str) -> Option<String> {
-    let mut path = template.to_string();
-    if path.contains("{siteId}") {
-        path = path.replace("{siteId}", cfg.site_id.as_deref()?);
+    let params = official_path_params(cfg, template)?;
+    let substituted = path::substitute_path(template, &params, CONNECTOR_PREFIXES).ok()?;
+    Some(OfficialNetworkApi::new_for_test("").path(&substituted))
+}
+
+fn official_path_params(cfg: &Config, template: &str) -> Option<Value> {
+    let mut params = serde_json::Map::new();
+    if template.contains("{siteId}") {
+        params.insert(
+            "siteId".to_string(),
+            Value::String(cfg.site_id.as_deref()?.to_string()),
+        );
     }
     for key in [
         "id",
@@ -141,22 +153,23 @@ pub fn official_path(cfg: &Config, template: &str) -> Option<String> {
         "trafficMatchingListId",
         "wifiBroadcastId",
     ] {
-        path = path.replace(
-            &format!("{{{key}}}"),
-            "00000000-0000-4000-8000-000000000000",
+        if template.contains(&format!("{{{key}}}")) {
+            params.insert(
+                key.to_string(),
+                Value::String("00000000-0000-4000-8000-000000000000".to_string()),
+            );
+        }
+    }
+    if template.contains("{portIdx}") {
+        params.insert("portIdx".to_string(), Value::String("9999".to_string()));
+    }
+    if template.contains("*path") {
+        params.insert(
+            "path".to_string(),
+            Value::String("/proxy/network/integration/v1/info".to_string()),
         );
     }
-    path = path.replace("{portIdx}", "9999");
-    if path.contains("*path") {
-        path = path.replace("*path", "proxy/network/integration/v1/info");
-    }
-    let normalized = path.trim_start_matches('/');
-    let full = if let Some(rest) = normalized.strip_prefix("v1/") {
-        format!("/proxy/network/integration/v1/{rest}")
-    } else {
-        format!("/proxy/network/integration/{normalized}")
-    };
-    Some(full)
+    Some(Value::Object(params))
 }
 
 pub fn internal_path(cfg: &Config, template: &str) -> String {
