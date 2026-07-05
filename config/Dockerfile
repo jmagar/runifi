@@ -7,14 +7,18 @@ RUN apt-get update && apt-get install -y pkg-config libssl-dev && rm -rf /var/li
 
 # Cache deps — build a stub main so dep compilation is cached independently of src changes
 COPY Cargo.toml Cargo.lock ./
-# Strip xtask workspace member — not needed in Docker build context
-RUN sed -i 's/, \"xtask\"//g; s/\"xtask\", //g; s/\"xtask\"//g' Cargo.toml
+COPY xtask/Cargo.toml xtask/Cargo.toml
 RUN --mount=type=cache,id=rustifi-cargo-registry,target=/usr/local/cargo/registry,sharing=locked \
     --mount=type=cache,id=rustifi-cargo-git,target=/usr/local/cargo/git,sharing=locked \
     --mount=type=cache,id=rustifi-cargo-target,target=/app/target,sharing=locked \
-    mkdir src && echo "fn main() {}" > src/main.rs && cargo build --release --locked -p rustifi && rm -rf src
+    mkdir -p src xtask/src && \
+    echo "fn main() {}" > src/main.rs && \
+    echo "fn main() {}" > xtask/src/main.rs && \
+    cargo build --release --locked -p rustifi && \
+    rm -rf src
 
 # Build real binary
+COPY data/ data/
 COPY src/ src/
 RUN --mount=type=cache,id=rustifi-cargo-registry,target=/usr/local/cargo/registry,sharing=locked \
     --mount=type=cache,id=rustifi-cargo-git,target=/usr/local/cargo/git,sharing=locked \
