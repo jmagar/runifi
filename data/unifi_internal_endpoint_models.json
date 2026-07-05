@@ -1,0 +1,153 @@
+{
+  "source": "neutral-internal-network-reference",
+  "source_count": 12,
+  "accounted_count": 12,
+  "runtime_count": 12,
+  "non_runtime_count": 0,
+  "tools": [
+    {
+      "action": "clients",
+      "title": "Clients",
+      "method": "GET",
+      "path": "/stat/sta",
+      "mutating": false,
+      "runtime": true,
+      "verified": true,
+      "verification_mode": "live_2xx",
+      "auth_scope": "read",
+      "evidence": "live Cloud Gateway Max probe returned 2xx"
+    },
+    {
+      "action": "devices",
+      "title": "Devices",
+      "method": "GET",
+      "path": "/stat/device",
+      "mutating": false,
+      "runtime": true,
+      "verified": true,
+      "verification_mode": "live_2xx",
+      "auth_scope": "read",
+      "evidence": "live Cloud Gateway Max probe returned 2xx"
+    },
+    {
+      "action": "wlans",
+      "title": "WLANs",
+      "method": "GET",
+      "path": "/rest/wlanconf",
+      "mutating": false,
+      "runtime": true,
+      "verified": true,
+      "verification_mode": "live_2xx",
+      "auth_scope": "read",
+      "evidence": "live Cloud Gateway Max probe returned 2xx"
+    },
+    {
+      "action": "health",
+      "title": "Health",
+      "method": "GET",
+      "path": "/stat/health",
+      "mutating": false,
+      "runtime": true,
+      "verified": true,
+      "verification_mode": "live_2xx",
+      "auth_scope": "read",
+      "evidence": "live Cloud Gateway Max probe returned 2xx"
+    },
+    {
+      "action": "alarms",
+      "title": "Alarms",
+      "method": "GET",
+      "path": "/rest/alarm",
+      "mutating": false,
+      "runtime": true,
+      "verified": true,
+      "verification_mode": "live_2xx",
+      "auth_scope": "read",
+      "evidence": "live Cloud Gateway Max probe returned 2xx"
+    },
+    {
+      "action": "sysinfo",
+      "title": "System Info",
+      "method": "GET",
+      "path": "/stat/sysinfo",
+      "mutating": false,
+      "runtime": true,
+      "verified": true,
+      "verification_mode": "live_2xx",
+      "auth_scope": "read",
+      "evidence": "live Cloud Gateway Max probe returned 2xx"
+    },
+    {
+      "action": "me",
+      "title": "Authenticated User",
+      "method": "GET",
+      "path": "/api/self",
+      "mutating": false,
+      "runtime": true,
+      "verified": true,
+      "verification_mode": "live_2xx",
+      "auth_scope": "read",
+      "evidence": "live Cloud Gateway Max probe returned 2xx"
+    },
+    {
+      "action": "internal_list_networks",
+      "title": "List Networks",
+      "method": "GET",
+      "path": "/rest/networkconf",
+      "mutating": false,
+      "runtime": true,
+      "verified": true,
+      "verification_mode": "live_2xx",
+      "auth_scope": "read",
+      "evidence": "live Cloud Gateway Max probe returned 2xx"
+    },
+    {
+      "action": "internal_list_alarms",
+      "title": "List Alarms",
+      "method": "GET",
+      "path": "/rest/alarm",
+      "mutating": false,
+      "runtime": true,
+      "verified": true,
+      "verification_mode": "live_2xx",
+      "auth_scope": "read",
+      "evidence": "live Cloud Gateway Max probe returned 2xx"
+    },
+    {
+      "action": "internal_get_network_health",
+      "title": "Get Network Health",
+      "method": "GET",
+      "path": "/stat/health",
+      "mutating": false,
+      "runtime": true,
+      "verified": true,
+      "verification_mode": "live_2xx",
+      "auth_scope": "read",
+      "evidence": "live Cloud Gateway Max probe returned 2xx"
+    },
+    {
+      "action": "internal_list_port_forwards",
+      "title": "List Port Forwards",
+      "method": "GET",
+      "path": "/rest/portforward",
+      "mutating": false,
+      "runtime": true,
+      "verified": true,
+      "verification_mode": "live_2xx",
+      "auth_scope": "read",
+      "evidence": "live Cloud Gateway Max probe returned 2xx"
+    },
+    {
+      "action": "internal_trigger_rf_scan",
+      "title": "Trigger RF Scan",
+      "method": "POST",
+      "path": "/cmd/devmgr",
+      "mutating": true,
+      "runtime": true,
+      "verified": true,
+      "verification_mode": "live_2xx",
+      "auth_scope": "admin",
+      "evidence": "live Cloud Gateway Max probe returned 2xx"
+    }
+  ]
+}

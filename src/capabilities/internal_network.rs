@@ -15,18 +15,18 @@ struct Tool {
     path: String,
     title: String,
     mutating: bool,
-    verified: bool,
+    runtime: bool,
 }
 
 pub fn capabilities() -> Vec<Capability> {
     let inventory: Inventory = serde_json::from_str(include_str!(
-        "../../data/unifi_internal_reference_tools.json"
+        "../../data/unifi_internal_endpoint_models.json"
     ))
-    .expect("internal UniFi inventory should be valid JSON");
+    .expect("internal UniFi endpoint models should be valid JSON");
     let mut caps = inventory
         .tools
         .into_iter()
-        .filter(|tool| tool.verified)
+        .filter(|tool| tool.runtime)
         .map(|tool| Capability {
             action: tool.action,
             title: tool.title,
