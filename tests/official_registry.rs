@@ -51,3 +51,27 @@ fn every_official_operation_has_method_and_path() {
         );
     }
 }
+
+#[test]
+fn official_inventory_count_is_the_parity_floor() {
+    let inventory: serde_json::Value =
+        serde_json::from_str(include_str!("../data/unifi_official_network_v10_3_58.json"))
+            .expect("official inventory should parse");
+    assert_eq!(inventory["count"].as_u64(), Some(78));
+    assert_eq!(inventory["operations"].as_array().unwrap().len(), 78);
+}
+
+#[test]
+fn every_official_operation_has_registered_action() {
+    let inventory: serde_json::Value =
+        serde_json::from_str(include_str!("../data/unifi_official_network_v10_3_58.json"))
+            .expect("official inventory should parse");
+    for op in inventory["operations"].as_array().unwrap() {
+        let operation_id = op["operation_id"].as_str().unwrap();
+        let action = rustifi::capabilities::official_network::action_name(operation_id);
+        assert!(
+            rustifi::capabilities::find_capability(&action).is_some(),
+            "missing {action}"
+        );
+    }
+}

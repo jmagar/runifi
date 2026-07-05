@@ -27,7 +27,7 @@ pub fn capabilities() -> Vec<Capability> {
         .map(|operation| {
             let mutating = !operation.method.eq_ignore_ascii_case("GET");
             Capability {
-                action: action_name(&operation),
+                action: action_name(&operation.operation_id),
                 title: operation.summary,
                 source: ApiSourceFamily::Official,
                 method: Some(operation.method),
@@ -38,8 +38,8 @@ pub fn capabilities() -> Vec<Capability> {
         .collect()
 }
 
-fn action_name(operation: &Operation) -> String {
-    let override_name = match operation.operation_id.as_str() {
+pub fn action_name(operation_id: &str) -> String {
+    let override_name = match operation_id {
         "ConnectorDelete" => Some("official_connector_delete"),
         "ConnectorGet" => Some("official_connector_get"),
         "ConnectorPatch" => Some("official_connector_patch"),
@@ -54,7 +54,7 @@ fn action_name(operation: &Operation) -> String {
     };
     override_name
         .map(str::to_string)
-        .unwrap_or_else(|| format!("official_{}", camel_to_snake(&operation.operation_id)))
+        .unwrap_or_else(|| format!("official_{}", camel_to_snake(operation_id)))
 }
 
 fn camel_to_snake(input: &str) -> String {

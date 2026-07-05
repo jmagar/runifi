@@ -3,7 +3,7 @@
 ## Sources
 
 - Official Network API: `data/unifi_official_network_v10_3_58.json`
-- Internal capability reference inventory: `data/unifi_internal_reference_tools.json`
+- Internal endpoint models: `data/unifi_internal_endpoint_models.json`
 
 ## API Families
 
@@ -14,7 +14,7 @@
 ## Initial Coverage
 
 - Official Network operations targeted: 78.
-- Internal Network reference rows captured: 12; live-verified runtime capabilities: 12.
+- Internal Network reference rows accounted: 12; live-verified runtime capabilities: 12.
 - Existing live-verified rustifi actions preserved: clients, devices, wlans, health, alarms, sysinfo, me.
 
 ## Implementation Status
@@ -40,11 +40,19 @@
 | `list_wifi` | hybrid | official WiFi or `wlans` | implemented |
 | `get_system_info` | hybrid | official info or `sysinfo` | implemented |
 
-The internal reference inventory is registry-backed and intentionally contains only endpoints that returned a 2xx response against the live Cloud Gateway Max. Earlier placeholder research rows that returned `api.err.InvalidObject` or `api.err.NotFound` are not kept as supported endpoints.
+Official parity means every operation in `data/unifi_official_network_v10_3_58.json` is registered as an action, has a valid path template, has an auth scope, and is either contract-verified or safe-live verified. Contract verification is the CI-safe floor; live probing is an operator action.
+
+The internal runtime surface is model-backed by `data/unifi_internal_endpoint_models.json` and exposes only rows with `runtime=true`. Non-runtime rows remain in the model inventory for accounting instead of being deleted to make verification green.
 
 ## Endpoint Verification
 
-Run live route probes against a controller with:
+Run contract verification without network access:
+
+```bash
+cargo run -p xtask -- verify-api-endpoints --mode contract
+```
+
+Run live read probes against a controller with:
 
 ```bash
 UNIFI_URL=https://<gateway> \
@@ -52,17 +60,18 @@ UNIFI_API_KEY=<network-api-key> \
 UNIFI_SITE=default \
 UNIFI_SITE_ID=<official-site-uuid> \
 UNIFI_SKIP_TLS_VERIFY=true \
-cargo run -p xtask -- verify-api-endpoints
+cargo run -p xtask -- verify-api-endpoints --mode safe_live
 ```
 
-The verifier writes `data/unifi_endpoint_verification_report.json`.
+The verifier writes local reports under `target/unifi_verification/`; these reports must not be committed.
 
 Result interpretation:
 
-- `ok`: endpoint returned a 2xx response.
-- `route_reached_rejected_probe`: endpoint returned an expected 4xx for an inert or placeholder probe; this usually means the route/auth/path reached controller validation.
-- `auth_or_permission_failed`: API key was rejected or lacks permission.
+- `live_ok`: endpoint returned a 2xx response in live mode.
+- `contract_ok`: endpoint is registered, path-valid, auth-scoped, and safe by policy in contract mode.
+- `requires_fixture`: endpoint needs a concrete object ID or fixture before live probing.
+- `auth_failed`: API key was rejected or lacks permission.
 - `server_error`: request failed or controller returned 5xx.
-- `missing_site_id`: set `UNIFI_SITE_ID` to probe site-scoped official endpoints.
+- `skipped`: endpoint was disabled by mode or request budget.
 
-By default `UNIFI_VERIFY_MUTATING=true` sends inert bodies and placeholder object IDs to mutating endpoints. Set `UNIFI_VERIFY_MUTATING=false` to probe only read endpoints. Set `UNIFI_VERIFY_UNVERIFIED_INTERNAL=false` to skip unverified internal reference rows.
+`mutating_live` is reserved for disposable or controlled sites. It is never the default.
