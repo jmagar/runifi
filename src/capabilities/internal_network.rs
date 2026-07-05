@@ -34,7 +34,6 @@ pub fn capabilities() -> Vec<Capability> {
             method: Some(tool.method),
             path: Some(tool.path),
             mutating: tool.mutating,
-            requires_confirmation: tool.mutating,
         })
         .collect::<Vec<_>>();
     caps.extend([
@@ -55,6 +54,5 @@ fn hybrid(action: &str, title: &str) -> Capability {
         method: None,
         path: None,
         mutating: false,
-        requires_confirmation: false,
     }
 }

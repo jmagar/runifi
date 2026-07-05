@@ -4,8 +4,9 @@ description: >
   Use this skill whenever the user asks about their UniFi network — connected clients, who's
   on the WiFi, which devices are online, access points, switches, gateways, network health,
   site health, active alarms, network events, WiFi configurations (SSIDs), controller sysinfo,
-  or their authenticated UniFi identity. This skill covers the rustifi MCP server (read-only
-  Rust bridge to the UniFi REST API via X-API-KEY). Trigger phrases include: "UniFi clients",
+  or their authenticated UniFi identity. This skill covers the rustifi MCP server, a Rust bridge
+  to official and internal UniFi APIs via X-API-KEY. Legacy convenience actions are read-only;
+  mutating actions require explicit admin authorization. Trigger phrases include: "UniFi clients",
   "connected clients", "who's on the network", "UniFi devices", "access points", "APs",
   "UniFi switches", "WiFi networks", "WLAN config", "SSIDs", "network health", "UniFi health",
   "site health", "UniFi alarms", "network alerts", "network events", "UniFi events",
@@ -16,7 +17,7 @@ description: >
 
 # UniFi Skill (rustifi)
 
-Access to a UniFi network controller via the **rustifi** MCP server. Data is fetched from the documented Network Integration API or internal controller APIs using X-API-KEY authentication. Mutating actions require explicit `confirm=true`.
+Access to a UniFi network controller via the **rustifi** MCP server. Data is fetched from the documented Network Integration API or internal controller APIs using X-API-KEY authentication. Mutating actions require MCP admin authorization.
 
 ## Quick Reference
 
@@ -66,8 +67,8 @@ unifi(action="list_clients", params={"prefer": "internal"})
 
 | family | description | extra params |
 |--------|-------------|--------------|
-| `official_*` | Documented Network Integration API under `/proxy/network/integration/v1` | path params like `siteId`, `networkId`; `query`; `body`; `confirm` for mutations |
-| `internal_*` | Internal controller-compatible actions under `/proxy/network/api/s/{site}` and `/proxy/network/v2/api/site/{site}` | `query`; `body`; `confirm` for mutations |
+| `official_*` | Documented Network Integration API under `/proxy/network/integration/v1` | path params like `siteId`, `networkId`; `query`; `body`; admin auth for mutations |
+| `internal_*` | Internal controller-compatible actions under `/proxy/network/api/s/{site}` and `/proxy/network/v2/api/site/{site}` | `query`; `body`; admin auth for mutations |
 | hybrid actions | `list_clients`, `list_devices`, `list_networks`, `list_wifi`, `get_system_info` | uses internal actions by default; pass `siteId` or `prefer="official"` for official API |
 
 ### Response Shape

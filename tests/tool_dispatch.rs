@@ -79,7 +79,7 @@ fn mcp_auth_scope_comes_from_capability_registry() {
     );
     assert_eq!(
         rustifi::mcp::required_scope_for("official_create_network"),
-        Some("unifi:__deny__")
+        Some("unifi:admin")
     );
     assert_eq!(
         rustifi::mcp::required_scope_for("missing_action"),

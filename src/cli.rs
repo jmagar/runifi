@@ -15,17 +15,11 @@ pub enum CliCommand {
     Wlans,
     Health,
     Alarms,
-    Events {
-        limit: Option<usize>,
-    },
+    Events { limit: Option<usize> },
     Sysinfo,
     Me,
     Doctor,
-    Action {
-        action: String,
-        params: Value,
-        confirm: bool,
-    },
+    Action { action: String, params: Value },
 }
 
 impl CliCommand {
@@ -33,7 +27,7 @@ impl CliCommand {
         let json = args.iter().any(|a| a == "--json");
         let rest: Vec<&str> = args
             .iter()
-            .filter(|a| !matches!(a.as_str(), "--json" | "--confirm"))
+            .filter(|a| !matches!(a.as_str(), "--json"))
             .map(String::as_str)
             .collect();
 
@@ -52,10 +46,9 @@ impl CliCommand {
             [action, ..] if find_capability(action).is_some() => Self::Action {
                 action: (*action).to_string(),
                 params: parse_params(&rest)?,
-                confirm: args.iter().any(|arg| arg == "--confirm"),
             },
             other => bail!(
-                "unknown command: {}\n\nRun `unifi --help` for usage.",
+                "unknown command: {}\n\nRun `runifi --help` for usage.",
                 other.join(" ")
             ),
         };
@@ -83,6 +76,9 @@ fn parse_params(args: &[&str]) -> Result<Value> {
                     .get(idx + 1)
                     .ok_or_else(|| anyhow::anyhow!("--body-json requires a JSON object"))?;
                 let body: Value = serde_json::from_str(value)?;
+                if !body.is_object() {
+                    bail!("--body-json requires a JSON object");
+                }
                 merge_param(&mut params, "body", body);
                 idx += 2;
             }
@@ -93,7 +89,7 @@ fn parse_params(args: &[&str]) -> Result<Value> {
                 merge_param(&mut params, "limit", json!(value.parse::<usize>()?));
                 idx += 2;
             }
-            _ => idx += 1,
+            other => bail!("unknown argument for generated action: {other}"),
         }
     }
     Ok(params)
@@ -129,16 +125,11 @@ pub async fn run(service: &UnifiService, cmd: CliCommand, json: bool) -> Result<
         CliCommand::Events { limit } => ("events".to_string(), service.events(limit).await?),
         CliCommand::Sysinfo => ("sysinfo".to_string(), service.sysinfo().await?),
         CliCommand::Me => ("me".to_string(), service.me().await?),
-        CliCommand::Action {
-            action,
-            params,
-            confirm,
-        } => {
+        CliCommand::Action { action, params } => {
             let data = service
                 .execute(ActionRequest {
                     action: action.clone(),
                     params,
-                    confirm,
                 })
                 .await?;
             (action, data)

@@ -123,7 +123,7 @@ Expected response:
 {"status": "ok"}
 ```
 
-Send a test syslog message and confirm it arrives:
+Send a test syslog message and verify it arrives:
 
 ```bash
 logger -n localhost -P 1514 --tcp "test from $(hostname)"
@@ -210,7 +210,7 @@ For Docker ingest integration testing, keep the default smoke test focused on UD
 
 ### Plugin not discovered by Claude Code
 
-- Run `/plugin list` and confirm syslog-mcp appears
+- Run `/plugin list` and verify syslog-mcp appears
 - Check `~/.claude/plugins/cache/` for the plugin directory
 - Re-run `/plugin marketplace add jmagar/claude-homelab` to refresh
 

@@ -20,7 +20,6 @@ async fn official_smoke_actions() {
             .execute(ActionRequest {
                 action: action.to_string(),
                 params,
-                confirm: false,
             })
             .await
             .unwrap_or_else(|error| panic!("{action} failed: {error}"));

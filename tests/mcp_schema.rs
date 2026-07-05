@@ -10,11 +10,3 @@ fn schema_contains_official_and_internal_actions() {
     assert!(actions.iter().any(|value| value == "official_list_clients"));
     assert!(actions.iter().any(|value| value == "internal_list_alarms"));
 }
-
-#[test]
-fn schema_exposes_confirmation_parameter() {
-    let tools = tool_definitions();
-    assert!(tools[0]["inputSchema"]["properties"]
-        .get("confirm")
-        .is_some());
-}

@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use rustifi::api::ApiSourceFamily;
 use rustifi::capabilities::{all_capabilities, find_capability};
 use serde_json::Value;
@@ -17,7 +19,22 @@ fn internal_registry_contains_reference_count() {
         .iter()
         .filter(|cap| cap.source == ApiSourceFamily::Internal)
         .collect::<Vec<_>>();
-    assert_eq!(internal.len(), 16);
+    let verified = inventory["tools"]
+        .as_array()
+        .expect("tools array")
+        .iter()
+        .filter(|tool| tool["verified"].as_bool() == Some(true))
+        .collect::<Vec<_>>();
+    assert_eq!(internal.len(), verified.len());
+
+    let exposed = internal
+        .iter()
+        .map(|cap| cap.action.as_str())
+        .collect::<HashSet<_>>();
+    for tool in verified {
+        let action = tool["action"].as_str().expect("verified action");
+        assert!(exposed.contains(action), "verified {action} is not exposed");
+    }
 }
 
 #[test]

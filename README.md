@@ -49,13 +49,13 @@ runifi events [--limit N] [--json]     Recent events (optional limit)
 runifi sysinfo [--json]                Controller system information
 runifi me [--json]                     Authenticated user info
 runifi official_list_clients --param siteId=<uuid> --json
-runifi official_create_network --param siteId=<uuid> --body-json '{"name":"IoT"}' --confirm --json
+runifi official_create_network --param siteId=<uuid> --body-json '{"name":"IoT"}' --json
 runifi list_clients --param siteId=<uuid> --json
 ```
 
 ## MCP Actions
 
-The `unifi` MCP tool accepts an `action` argument. Mutating actions require `confirm=true`.
+The `unifi` MCP tool accepts an `action` argument. Mutating actions require MCP admin authorization.
 
 | Action    | Description                              |
 |-----------|------------------------------------------|
@@ -84,7 +84,7 @@ Additional generated action families:
 | `UNIFI_URL`                 | —             | Controller base URL, e.g. `https://unifi.local` (required) |
 | `UNIFI_API_KEY`             | —             | API key for `X-API-KEY` header (required)        |
 | `UNIFI_SITE`                | `default`     | UniFi site name                                  |
-| `UNIFI_SITE_ID`             | —             | Official API site UUID for live tests and `official_*` calls |
+| `UNIFI_SITE_ID`             | —             | Official API site UUID used by ignored live tests only; pass `--param siteId=<uuid>` for normal `official_*` CLI calls |
 | `UNIFI_SKIP_TLS_VERIFY`     | `true`        | Skip TLS cert check (needed for self-signed)     |
 | `UNIFI_LEGACY`              | `false`       | Legacy controller mode (no `/proxy/network` prefix) |
 | `UNIFI_MCP_HOST`            | `0.0.0.0`     | MCP server bind host                             |

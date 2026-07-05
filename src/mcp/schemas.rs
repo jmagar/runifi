@@ -13,7 +13,7 @@ pub fn tool_definitions() -> Vec<Value> {
 
     vec![json!({
         "name": "unifi",
-        "description": "Query and manage a UniFi network controller via official, internal, and hybrid API actions. Mutating actions require confirm=true.",
+        "description": "Query and manage a UniFi network controller via official, internal, and hybrid API actions. Mutating actions require admin authorization.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -25,10 +25,6 @@ pub fn tool_definitions() -> Vec<Value> {
                 "params": {
                     "type": "object",
                     "description": "Action-specific parameters, including path values, query, and body."
-                },
-                "confirm": {
-                    "type": "boolean",
-                    "description": "Required true for mutating actions."
                 },
                 "limit": {
                     "type": "integer",

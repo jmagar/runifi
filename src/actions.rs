@@ -13,7 +13,6 @@ use crate::config::UnifiConfig;
 pub struct ActionRequest {
     pub action: String,
     pub params: Value,
-    pub confirm: bool,
 }
 
 pub struct ActionDispatcher {
@@ -33,9 +32,6 @@ impl ActionDispatcher {
         let Some(capability) = find_capability(&request.action) else {
             bail!("unknown UniFi action: {}", request.action);
         };
-        if capability.requires_confirmation && !request.confirm {
-            bail!("action {} requires confirmation", capability.action);
-        }
         match capability.source {
             ApiSourceFamily::Official => {
                 official::execute(&self.cfg, capability, &request.params).await

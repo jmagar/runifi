@@ -13,7 +13,6 @@ pub struct Capability {
     pub method: Option<String>,
     pub path: Option<String>,
     pub mutating: bool,
-    pub requires_confirmation: bool,
 }
 
 pub fn all_capabilities() -> &'static [Capability] {

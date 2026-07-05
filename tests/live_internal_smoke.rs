@@ -14,7 +14,6 @@ async fn internal_smoke_actions() {
             .execute(ActionRequest {
                 action: action.to_string(),
                 params: json!({}),
-                confirm: false,
             })
             .await
             .unwrap_or_else(|error| panic!("{action} failed: {error}"));

@@ -37,7 +37,7 @@
 | `internal_list_port_forwards` | internal | `GET /rest/portforward` | generic internal dispatcher |
 | `internal_list_dns_records` | internal | `GET /rest/dnsrecord` | generic internal dispatcher |
 | `internal_get_switch_ports` | internal | `GET /stat/switch-port` | generic internal dispatcher |
-| `internal_trigger_rf_scan` | internal | `POST /cmd/devmgr` | confirmation-gated generic dispatcher |
+| `internal_trigger_rf_scan` | internal | `POST /cmd/devmgr` | admin-authorized generic dispatcher |
 | `list_clients` | hybrid | official clients or `clients` | implemented |
 | `list_devices` | hybrid | official devices or `devices` | implemented |
 | `list_networks` | hybrid | official networks or `internal_list_networks` | implemented |

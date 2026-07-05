@@ -22,6 +22,7 @@ use crate::config::McpConfig;
 use super::{prompts, schemas::tool_definitions, tools::execute_tool, AppState, AuthPolicy};
 
 const READ_SCOPE: &str = "unifi:read";
+const ADMIN_SCOPE: &str = "unifi:admin";
 const DENY_SCOPE: &str = "unifi:__deny__";
 
 #[derive(Clone)]
@@ -66,7 +67,8 @@ impl ServerHandler for UnifiRmcpServer {
             .to_owned();
 
         let auth = require_auth_context(&self.state, &context)?;
-        if let (Some(auth), Some(required_scope)) = (auth, required_scope_for(&action)) {
+        let required_scope = required_scope_for(&action);
+        if let (Some(auth), Some(required_scope)) = (auth, required_scope) {
             check_scope(auth, required_scope, &action)?;
         }
 
@@ -307,14 +309,20 @@ pub fn required_scope_for(action: &str) -> Option<&'static str> {
         None
     } else {
         find_capability(action)
-            .filter(|capability| !capability.mutating)
-            .map(|_| READ_SCOPE)
+            .map(|capability| {
+                if capability.mutating {
+                    ADMIN_SCOPE
+                } else {
+                    READ_SCOPE
+                }
+            })
             .or(Some(DENY_SCOPE))
     }
 }
 
 fn is_validation_error(error: &anyhow::Error) -> bool {
-    error.to_string().contains(" is required") || error.to_string().contains("unknown unifi action")
+    let message = error.to_string().to_ascii_lowercase();
+    message.contains(" is required") || message.contains("unknown unifi action")
 }
 
 // ── allowed hosts / origins ───────────────────────────────────────────────────

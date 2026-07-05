@@ -33,7 +33,6 @@ pub fn capabilities() -> Vec<Capability> {
                 method: Some(operation.method),
                 path: Some(operation.path),
                 mutating,
-                requires_confirmation: mutating,
             }
         })
         .collect()

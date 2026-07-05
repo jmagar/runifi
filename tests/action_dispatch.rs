@@ -14,27 +14,12 @@ fn test_config(url: impl Into<String>) -> UnifiConfig {
 }
 
 #[tokio::test]
-async fn mutating_official_action_requires_confirmation() {
-    let dispatcher = ActionDispatcher::new_for_test(test_config("https://gateway.local"));
-    let result = dispatcher
-        .execute(ActionRequest {
-            action: "official_create_network".into(),
-            params: json!({"siteId": "site-1", "body": {"name": "IoT"}}),
-            confirm: false,
-        })
-        .await;
-    let message = result.unwrap_err().to_string();
-    assert!(message.contains("requires confirmation"));
-}
-
-#[tokio::test]
 async fn connector_path_rejects_non_integration_prefix() {
     let dispatcher = ActionDispatcher::new_for_test(test_config("https://gateway.local"));
     let result = dispatcher
         .execute(ActionRequest {
             action: "official_connector_get".into(),
             params: json!({"id": "console-1", "path": "/proxy/network/api/s/default/stat/sta"}),
-            confirm: false,
         })
         .await;
     let message = result.unwrap_err().to_string();
@@ -56,7 +41,6 @@ async fn official_list_clients_sends_expected_get_request() {
         .execute(ActionRequest {
             action: "official_list_clients".into(),
             params: json!({"siteId": "site-1", "query": {"limit": 1}}),
-            confirm: false,
         })
         .await
         .expect("official list clients should succeed");
@@ -68,7 +52,7 @@ async fn official_list_clients_sends_expected_get_request() {
 }
 
 #[tokio::test]
-async fn official_create_network_requires_confirm_and_sends_body() {
+async fn official_create_network_sends_body() {
     let server = CaptureServer::spawn(201, r#"{"id":"network-1"}"#);
     let dispatcher = ActionDispatcher::new_for_test(test_config(server.url()));
 
@@ -76,10 +60,9 @@ async fn official_create_network_requires_confirm_and_sends_body() {
         .execute(ActionRequest {
             action: "official_create_network".into(),
             params: json!({"siteId": "site-1", "body": {"name": "IoT"}}),
-            confirm: true,
         })
         .await
-        .expect("official create network should succeed with confirm");
+        .expect("official create network should succeed");
 
     let request = server.request();
     assert!(request.starts_with("post /proxy/network/integration/v1/sites/site-1/networks "));
@@ -95,7 +78,6 @@ async fn official_path_params_accept_numbers_and_encode_segments() {
         .execute(ActionRequest {
             action: "official_get_network_details".into(),
             params: json!({"siteId": "site-1", "networkId": "net/a?b"}),
-            confirm: false,
         })
         .await
         .expect("encoded network details should succeed");
@@ -116,7 +98,6 @@ async fn official_path_params_accept_numbers_and_encode_segments() {
                 "portIdx": 1,
                 "body": {"action": "cycle-poe"}
             }),
-            confirm: true,
         })
         .await
         .expect("numeric port path parameter should succeed");
@@ -139,7 +120,6 @@ async fn official_connector_get_allows_integration_proxy_path() {
                 "id": "console-1",
                 "path": "/proxy/network/integration/v1/sites"
             }),
-            confirm: false,
         })
         .await
         .expect("connector get should allow integration proxy path");
@@ -157,7 +137,6 @@ async fn http_query_must_be_object() {
         .execute(ActionRequest {
             action: "official_list_clients".into(),
             params: json!({"siteId": "site-1", "query": "limit=1"}),
-            confirm: false,
         })
         .await;
     let message = result.unwrap_err().to_string();
@@ -171,7 +150,6 @@ async fn hybrid_defaults_to_internal_without_site_id() {
         .execute(ActionRequest {
             action: "list_clients".into(),
             params: json!({}),
-            confirm: false,
         })
         .await;
     let message = result.unwrap_err().to_string();
@@ -185,11 +163,57 @@ async fn hybrid_uses_official_when_site_id_is_present() {
         .execute(ActionRequest {
             action: "list_clients".into(),
             params: json!({"siteId": "site-1"}),
-            confirm: false,
         })
         .await;
     let message = result.unwrap_err().to_string();
     assert!(message.contains("/proxy/network/integration/v1/sites/site-1/clients"));
+}
+
+#[test]
+fn all_hybrid_aliases_resolve_to_expected_targets() {
+    let cases = [
+        ("list_clients", "clients", "official_list_clients"),
+        ("list_devices", "devices", "official_list_devices"),
+        (
+            "list_networks",
+            "internal_list_networks",
+            "official_list_networks",
+        ),
+        ("list_wifi", "wlans", "official_list_wifi"),
+        ("get_system_info", "sysinfo", "official_get_info"),
+    ];
+
+    for (action, internal, official) in cases {
+        let (target, params) = rustifi::actions::hybrid::resolve(action, &json!({})).unwrap();
+        assert_eq!(target, internal, "{action} should default to internal");
+        assert_eq!(params, json!({}));
+
+        let (target, params) =
+            rustifi::actions::hybrid::resolve(action, &json!({"siteId": "site-1"})).unwrap();
+        assert_eq!(target, official, "{action} should use official with siteId");
+        assert_eq!(params, json!({"siteId": "site-1"}));
+
+        let (target, params) = rustifi::actions::hybrid::resolve(
+            action,
+            &json!({"siteId": "site-1", "prefer": "internal"}),
+        )
+        .unwrap();
+        assert_eq!(target, internal, "{action} prefer=internal should win");
+        assert_eq!(params, json!({"siteId": "site-1"}));
+    }
+}
+
+#[test]
+fn hybrid_preference_validation_is_explicit() {
+    let (target, params) =
+        rustifi::actions::hybrid::resolve("list_clients", &json!({"prefer": "official"})).unwrap();
+    assert_eq!(target, "official_list_clients");
+    assert_eq!(params, json!({}));
+
+    let message = rustifi::actions::hybrid::resolve("list_clients", &json!({"prefer": "maybe"}))
+        .unwrap_err()
+        .to_string();
+    assert!(message.contains("unknown hybrid preference"));
 }
 
 struct CaptureServer {

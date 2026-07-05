@@ -43,29 +43,22 @@ fn events_limit_and_json_parse() {
 }
 
 #[test]
-fn official_action_params_body_and_confirm_parse() {
+fn official_action_params_and_body_parse() {
     let (command, json) = parse(&[
         "official_create_network",
         "--param",
         "siteId=site-1",
         "--body-json",
         r#"{"name":"IoT"}"#,
-        "--confirm",
         "--json",
     ])
     .unwrap();
 
     assert!(json);
-    let CliCommand::Action {
-        action,
-        params,
-        confirm,
-    } = command
-    else {
+    let CliCommand::Action { action, params } = command else {
         panic!("expected generated action command");
     };
     assert_eq!(action, "official_create_network");
-    assert!(confirm);
     assert_eq!(params["siteId"], "site-1");
     assert_eq!(params["body"], json!({"name": "IoT"}));
 }
@@ -74,23 +67,29 @@ fn official_action_params_body_and_confirm_parse() {
 fn hybrid_action_parse_supports_preference() {
     let (command, json) = parse(&["list_clients", "--param", "prefer=internal", "--json"]).unwrap();
     assert!(json);
-    let CliCommand::Action {
-        action,
-        params,
-        confirm,
-    } = command
-    else {
+    let CliCommand::Action { action, params } = command else {
         panic!("expected hybrid action command");
     };
     assert_eq!(action, "list_clients");
     assert_eq!(params["prefer"], "internal");
-    assert!(!confirm);
 }
 
 #[test]
 fn unknown_command_returns_error() {
     assert!(parse(&["notacommand"]).is_err());
     assert!(parse(&[]).is_err());
+}
+
+#[test]
+fn malformed_generated_action_args_return_errors() {
+    assert!(parse(&["official_list_clients", "--param"]).is_err());
+    assert!(parse(&["official_list_clients", "--param", "siteId"]).is_err());
+    assert!(parse(&["official_create_network", "--body-json"]).is_err());
+    assert!(parse(&["official_create_network", "--body-json", "{nope"]).is_err());
+    assert!(parse(&["official_create_network", "--body-json", "[]"]).is_err());
+    assert!(parse(&["official_list_clients", "--bogus"]).is_err());
+    assert!(parse(&["events", "--limit"]).is_err());
+    assert!(parse(&["events", "--limit", "-1"]).is_err());
 }
 
 #[test]

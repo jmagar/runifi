@@ -7,7 +7,7 @@
 #
 # Also tests the schema resource: unifi://schema/mcp-tool
 #
-# Semantic validation confirms real UniFi API data is flowing:
+# Semantic validation verifies real UniFi API data is flowing:
 #   clients  → data array (empty is OK when no clients connected)
 #   devices  → data array with at least one item (APs/switches exist)
 #   wlans    → data array with at least one WLAN (name, security fields)
@@ -20,7 +20,7 @@
 #
 # Credentials sourced from ~/.claude-homelab/.env:
 #   UNIFI_MCP_HOST   (default: localhost)
-#   UNIFI_MCP_PORT   (default: 7474)
+#   UNIFI_MCP_PORT   (default: 40030)
 #   UNIFI_MCP_TOKEN  (optional; used as Bearer token when set)
 #
 # Usage:
@@ -220,7 +220,7 @@ smoke_test_server() {
   fi
   log_info "Health endpoint OK"
 
-  # 2. tools/list to confirm MCP layer responds
+  # 2. tools/list to verify MCP layer responds
   local tool_count
   tool_count="$(
     curl -sf --max-time 10 \
@@ -667,8 +667,8 @@ main() {
     log_error ""
     log_error "To diagnose:"
     log_error "  docker ps | grep unifi-mcp"
-    log_error "  curl http://localhost:7474/health"
-    log_error "  curl -X POST http://localhost:7474/mcp -H 'Content-Type: application/json' \\"
+    log_error "  curl http://localhost:40030/health"
+    log_error "  curl -X POST http://localhost:40030/mcp -H 'Content-Type: application/json' \\"
     log_error "    -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{}}'"
     exit 2
   }

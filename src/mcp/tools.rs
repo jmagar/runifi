@@ -26,17 +26,9 @@ async fn dispatch(state: &AppState, args: Value) -> anyhow::Result<Value> {
             if let Some(limit) = usize_arg(&args, "limit")? {
                 merge_param(&mut params, "limit", json!(limit));
             }
-            let confirm = args
-                .get("confirm")
-                .and_then(Value::as_bool)
-                .unwrap_or(false);
             state
                 .service
-                .execute(ActionRequest {
-                    action,
-                    params,
-                    confirm,
-                })
+                .execute(ActionRequest { action, params })
                 .await
         }
     }
