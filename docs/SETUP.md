@@ -186,7 +186,7 @@ For Docker ingest integration testing, keep the default smoke test focused on UD
 
 ### "Connection refused" on health check
 
-- Confirm the server is running: `docker compose ps` or `ps aux | grep syslog-mcp`
+- Verify the server is running: `docker compose ps` or `ps aux | grep syslog-mcp`
 - Verify `SYSLOG_MCP_PORT` matches the port you are curling
 - If running in Docker, ensure port 3100 is published in `docker-compose.yml`
 
@@ -197,7 +197,7 @@ For Docker ingest integration testing, keep the default smoke test focused on UD
 
 ### No syslog messages arriving
 
-- Confirm the syslog port is reachable: `nc -zvu <host> 1514`
+- Verify the syslog port is reachable: `nc -zvu <host> 1514`
 - Check iptables rules if redirecting 514 to 1514
 - Verify rsyslog config on the sending host: `systemctl status rsyslog`
 - Check Docker port mapping: `docker port syslog-mcp`

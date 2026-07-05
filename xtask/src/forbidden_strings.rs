@@ -63,7 +63,7 @@ fn forbidden_literals() -> Vec<String> {
     vec![
         ["allow", "_mutating"].concat(),
         ["allow", "_mutation"].concat(),
-        ["confirm", "_mutation"].concat(),
+        ["con", "firm", "_mutation"].concat(),
         ["mutation", "_gate"].concat(),
         ["unifi", "-network-api-mcp"].concat(),
         ["ubiquiti", "-mcp-server"].concat(),

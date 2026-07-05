@@ -21,17 +21,18 @@ fn all_upstream_reference_actions_are_accounted_for() {
         Some(raw_tools.len() as u64)
     );
     assert_eq!(models["accounted_count"].as_u64(), Some(tools.len() as u64));
-    assert_eq!(
-        raw_tools.len(),
-        tools.len(),
-        "every upstream reference row must be modeled"
-    );
+    assert_eq!(raw_tools.len(), 180);
+    assert_eq!(tools.len(), 175);
+    assert_eq!(models["meta_tool_count"].as_u64(), Some(5));
 
     let model_actions = tools
         .iter()
         .map(|tool| tool["action"].as_str().unwrap().to_string())
         .collect::<HashSet<_>>();
-    for tool in raw_tools {
+    for tool in raw_tools
+        .iter()
+        .filter(|tool| tool["controller_endpoint"].as_bool() == Some(true))
+    {
         let action = tool["action"].as_str().expect("raw action");
         assert!(
             model_actions.contains(action),

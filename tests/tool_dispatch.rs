@@ -74,7 +74,7 @@ fn mcp_auth_scope_comes_from_capability_registry() {
         Some("unifi:read")
     );
     assert_eq!(
-        rustifi::mcp::required_scope_for("internal_list_networks"),
+        rustifi::mcp::required_scope_for("unifi_list_networks"),
         Some("unifi:read")
     );
     assert_eq!(
@@ -89,7 +89,7 @@ fn mcp_auth_scope_comes_from_capability_registry() {
 
 #[tokio::test]
 async fn mutating_actions_require_admin_scope() {
-    let rf_scan = rustifi::capabilities::find_capability("internal_trigger_rf_scan")
+    let rf_scan = rustifi::capabilities::find_capability("unifi_trigger_rf_scan")
         .expect("rf scan capability");
     assert!(rf_scan.mutating);
     assert_eq!(rf_scan.auth_scope.as_str(), "admin");

@@ -29,14 +29,8 @@ fn forbidden_string_checker_exists() {
 }
 
 fn xtask() -> std::process::Command {
-    let xtask_path = std::env::current_exe()
-        .ok()
-        .and_then(|path| path.parent()?.parent().map(|target| target.join("xtask")));
-    if let Some(path) = xtask_path.filter(|path| path.exists()) {
-        return std::process::Command::new(path);
-    }
-
     let mut command = std::process::Command::new("cargo");
     command.args(["run", "-p", "xtask", "--quiet", "--"]);
+    command.env("RUSTC_BOOTSTRAP", "1");
     command
 }

@@ -41,6 +41,13 @@ pub fn capabilities() -> Vec<Capability> {
         })
         .collect::<Vec<_>>();
     caps.extend([
+        legacy("clients", "Clients", "GET", "/stat/sta"),
+        legacy("devices", "Devices", "GET", "/stat/device"),
+        legacy("wlans", "WLANs", "GET", "/rest/wlanconf"),
+        legacy("health", "Health", "GET", "/stat/health"),
+        legacy("alarms", "Alarms", "GET", "/stat/alarm"),
+        legacy("sysinfo", "System Info", "GET", "/stat/sysinfo"),
+        legacy("me", "Current User", "GET", "/api/self"),
         hybrid("list_clients", "List Clients"),
         hybrid("list_devices", "List Devices"),
         hybrid("list_networks", "List Networks"),
@@ -48,6 +55,19 @@ pub fn capabilities() -> Vec<Capability> {
         hybrid("get_system_info", "Get System Info"),
     ]);
     caps
+}
+
+fn legacy(action: &str, title: &str, method: &str, path: &str) -> Capability {
+    Capability {
+        action: action.to_string(),
+        title: title.to_string(),
+        source: ApiSourceFamily::Internal,
+        method: Some(method.to_string()),
+        path: Some(path.to_string()),
+        mutating: false,
+        auth_scope: AuthScope::Read,
+        verification_mode: Some("legacy_alias".to_string()),
+    }
 }
 
 fn hybrid(action: &str, title: &str) -> Capability {

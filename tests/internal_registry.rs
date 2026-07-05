@@ -9,10 +9,12 @@ fn internal_registry_contains_reference_count() {
     let inventory: Value =
         serde_json::from_str(include_str!("../data/unifi_internal_endpoint_models.json"))
             .expect("internal endpoint models should parse");
-    assert_eq!(inventory["runtime_count"].as_u64(), Some(12));
+    assert_eq!(inventory["source_count"].as_u64(), Some(180));
+    assert_eq!(inventory["runtime_count"].as_u64(), Some(175));
+    assert_eq!(inventory["meta_tool_count"].as_u64(), Some(5));
     assert_eq!(
         inventory["tools"].as_array().expect("tools array").len(),
-        12
+        175
     );
 
     let internal = all_capabilities()
@@ -25,7 +27,7 @@ fn internal_registry_contains_reference_count() {
         .iter()
         .filter(|tool| tool["runtime"].as_bool() == Some(true))
         .collect::<Vec<_>>();
-    assert_eq!(internal.len(), verified.len());
+    assert_eq!(internal.len(), verified.len() + 7);
 
     let exposed = internal
         .iter()
@@ -35,7 +37,7 @@ fn internal_registry_contains_reference_count() {
         let action = tool["action"].as_str().expect("verified action");
         assert!(exposed.contains(action), "verified {action} is not exposed");
     }
-    assert_eq!(internal.len(), 12);
+    assert_eq!(internal.len(), 182);
 }
 
 #[test]
@@ -51,10 +53,10 @@ fn existing_internal_actions_are_registered() {
 #[test]
 fn internal_gap_examples_are_registered() {
     for action in [
-        "internal_list_alarms",
-        "internal_get_network_health",
-        "internal_list_port_forwards",
-        "internal_trigger_rf_scan",
+        "unifi_list_alarms",
+        "unifi_get_network_health",
+        "unifi_list_port_forwards",
+        "unifi_trigger_rf_scan",
     ] {
         let cap = find_capability(action).unwrap_or_else(|| panic!("missing {action}"));
         assert_eq!(cap.source, ApiSourceFamily::Internal);
@@ -71,7 +73,7 @@ fn internal_reference_contains_only_verified_rows() {
             assert_eq!(tool["verified"].as_bool(), Some(true));
         }
     }
-    assert!(find_capability("internal_get_networks").is_none());
+    assert!(find_capability("unifi_tool_index").is_none());
 }
 
 #[test]
