@@ -82,6 +82,12 @@ fn runtime_models_are_safe_and_evidence_backed() {
 
         let scope = tool["auth_scope"].as_str().expect("auth scope");
         assert!(matches!(scope, "read" | "admin"));
+        if method == "POST" && path.starts_with("/cmd/") {
+            assert_eq!(
+                scope, "admin",
+                "{action} command endpoint POST must require admin scope"
+            );
+        }
 
         if tool["runtime"].as_bool() == Some(true) {
             assert_eq!(

@@ -2,7 +2,9 @@ use anyhow::{Result, bail};
 use rustifi::api::ApiSourceFamily;
 use rustifi::capabilities::{AuthScope, Capability, find_capability, official_network};
 
-use crate::endpoint_probe::{Config, InternalTool, OfficialOperation, Report, official_path};
+use crate::endpoint_probe::{
+    Config, InternalTool, OfficialOperation, ProbeStatus, Report, official_path,
+};
 
 pub(crate) struct LiveBudget {
     remaining: usize,
@@ -28,21 +30,21 @@ pub(crate) fn take_live_budget(budget: Option<&mut LiveBudget>) -> bool {
     budget.is_none_or(LiveBudget::try_take)
 }
 
-pub(crate) fn official_contract_status(mutating: bool, path: &str) -> &'static str {
+pub(crate) fn official_contract_status(mutating: bool, path: &str) -> ProbeStatus {
     if !mutating && !path.contains("*path") && requires_fixture(path) {
-        "requires_fixture"
+        ProbeStatus::RequiresFixture
     } else {
-        "contract_ok"
+        ProbeStatus::ContractOk
     }
 }
 
-pub(crate) fn official_contract_status_for(op: &OfficialOperation, mutating: bool) -> &'static str {
+pub(crate) fn official_contract_status_for(op: &OfficialOperation, mutating: bool) -> ProbeStatus {
     let action = official_network::action_name(&op.operation_id);
     let Some(capability) = find_capability(&action) else {
-        return "contract_error";
+        return ProbeStatus::ContractError;
     };
     if !official_contract_valid(capability, op, mutating) {
-        return "contract_error";
+        return ProbeStatus::ContractError;
     }
     official_contract_status(mutating, &op.path)
 }
@@ -87,7 +89,7 @@ pub(crate) fn fail_on_bad_status(report: &Report, contract_mode: bool, output: &
     let budget_exhausted = report
         .results
         .iter()
-        .filter(|result| result.status == "budget_exhausted")
+        .filter(|result| result.status == ProbeStatus::BudgetExhausted)
         .count();
     if budget_exhausted > 0 {
         bail!(

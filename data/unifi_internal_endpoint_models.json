@@ -975,7 +975,7 @@
       "runtime": true,
       "verified": true,
       "verification_mode": "contract_ok",
-      "auth_scope": "read",
+      "auth_scope": "admin",
       "evidence": "neutral upstream Network MCP manifest plus source ApiRequest mapping"
     },
     {
@@ -1191,7 +1191,7 @@
       "runtime": true,
       "verified": true,
       "verification_mode": "contract_ok",
-      "auth_scope": "read",
+      "auth_scope": "admin",
       "evidence": "neutral upstream Network MCP manifest plus source ApiRequest mapping"
     },
     {

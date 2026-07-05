@@ -4,7 +4,7 @@ use anyhow::{Context, Result, bail};
 use reqwest::blocking::Client;
 
 use crate::endpoint_probe::{
-    Config, InternalInventory, InternalTool, OfficialInventory, ProbeResult, Report,
+    Config, InternalInventory, InternalTool, OfficialInventory, ProbeResult, ProbeStatus, Report,
     budget_exhausted, classify_status, detail, discover_site_id, inert_body, internal_path,
     load_dotenv, official_path, skipped, timestamp, totals,
 };
@@ -119,17 +119,17 @@ pub fn verify() -> Result<()> {
         report
             .results
             .iter()
-            .filter(|result| result.status == "live_ok")
+            .filter(|result| result.status == ProbeStatus::LiveOk)
             .count(),
         report
             .results
             .iter()
-            .filter(|result| result.status == "contract_ok")
+            .filter(|result| result.status == ProbeStatus::ContractOk)
             .count(),
         report
             .results
             .iter()
-            .filter(|result| result.status == "requires_fixture")
+            .filter(|result| result.status == ProbeStatus::RequiresFixture)
             .count(),
         report.totals.unsupported,
         report.totals.rejected,
@@ -202,7 +202,7 @@ fn probe_official(
                 op.method,
                 op.path,
                 mutating,
-                "requires_fixture",
+                ProbeStatus::RequiresFixture,
                 None,
             ));
             continue;
@@ -214,7 +214,7 @@ fn probe_official(
                 op.method,
                 op.path,
                 mutating,
-                "contract_ok",
+                ProbeStatus::ContractOk,
                 None,
             ));
             continue;
@@ -228,7 +228,7 @@ fn probe_official(
                 path: None,
                 mutating,
                 verified_reference: None,
-                status: "skipped".to_string(),
+                status: ProbeStatus::Skipped,
                 http_status: None,
                 verdict: "missing_site_id".to_string(),
                 detail: "set UNIFI_SITE_ID to probe site-scoped official endpoints".to_string(),
@@ -279,13 +279,13 @@ fn probe_internal(
         if mode == VerifyMode::Contract || !tool.runtime {
             let invalid_admin_scope = tool.mutating && auth_scope != "admin";
             let status = if invalid_admin_scope {
-                "unsupported"
+                ProbeStatus::Unsupported
             } else if mode == VerifyMode::Contract && !internal_contract_valid(&tool) {
-                "contract_error"
+                ProbeStatus::ContractError
             } else if tool.runtime {
-                "contract_ok"
+                ProbeStatus::ContractOk
             } else {
-                tool.verification_mode.as_deref().unwrap_or("unsupported")
+                verification_status(tool.verification_mode.as_deref())
             };
             results.push(policy_result(
                 "internal",
@@ -308,7 +308,7 @@ fn probe_internal(
                 tool.method,
                 tool.path,
                 tool.mutating,
-                "requires_fixture",
+                ProbeStatus::RequiresFixture,
                 Some(tool.verified),
             ));
             continue;
@@ -320,7 +320,7 @@ fn probe_internal(
                 tool.method,
                 tool.path,
                 tool.mutating,
-                "contract_ok",
+                ProbeStatus::ContractOk,
                 Some(tool.verified),
             ));
             continue;
@@ -405,7 +405,7 @@ fn send_probe(
                 path: Some(path),
                 mutating,
                 verified_reference,
-                status: status_label.to_string(),
+                status: status_label,
                 http_status: Some(status_u16),
                 verdict: verdict.to_string(),
                 detail: detail(text),
@@ -419,7 +419,7 @@ fn send_probe(
             path: Some(path),
             mutating,
             verified_reference,
-            status: "server_error".to_string(),
+            status: ProbeStatus::ServerError,
             http_status: None,
             verdict: "request_error".to_string(),
             detail: error.to_string(),
@@ -433,7 +433,7 @@ fn policy_result(
     method: String,
     template: String,
     mutating: bool,
-    status: &str,
+    status: ProbeStatus,
     verified_reference: Option<bool>,
 ) -> ProbeResult {
     ProbeResult {
@@ -444,10 +444,19 @@ fn policy_result(
         path: None,
         mutating,
         verified_reference,
-        status: status.to_string(),
+        status,
         http_status: None,
-        verdict: status.to_string(),
+        verdict: status.as_str().to_string(),
         detail: String::new(),
+    }
+}
+
+fn verification_status(value: Option<&str>) -> ProbeStatus {
+    match value {
+        Some("live_2xx" | "contract_ok") => ProbeStatus::ContractOk,
+        Some("requires_fixture") => ProbeStatus::RequiresFixture,
+        Some("unsupported") | None => ProbeStatus::Unsupported,
+        Some(_) => ProbeStatus::ContractError,
     }
 }
 
@@ -477,6 +486,6 @@ fn official_count(results: &[ProbeResult]) -> usize {
 fn official_rejected(results: &[ProbeResult]) -> usize {
     results
         .iter()
-        .filter(|result| result.family == "official" && result.status == "rejected")
+        .filter(|result| result.family == "official" && result.status == ProbeStatus::Rejected)
         .count()
 }

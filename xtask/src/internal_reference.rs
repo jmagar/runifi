@@ -64,6 +64,33 @@ fn validate_inventories(raw: &Value, model: &Value) -> Result<()> {
         meta_tool_count,
         "model meta tool count",
     )?;
+    validate_command_post_scopes(model)?;
+    Ok(())
+}
+
+fn validate_command_post_scopes(model: &Value) -> Result<()> {
+    for tool in model
+        .get("tools")
+        .and_then(Value::as_array)
+        .ok_or_else(|| anyhow::anyhow!("tools must be an array"))?
+    {
+        let method = tool
+            .get("method")
+            .and_then(Value::as_str)
+            .unwrap_or_default();
+        let path = tool.get("path").and_then(Value::as_str).unwrap_or_default();
+        let scope = tool
+            .get("auth_scope")
+            .and_then(Value::as_str)
+            .unwrap_or_default();
+        if method == "POST" && path.starts_with("/cmd/") && scope != "admin" {
+            let action = tool
+                .get("action")
+                .and_then(Value::as_str)
+                .unwrap_or("unknown");
+            bail!("{action} posts to command endpoint without admin scope");
+        }
+    }
     Ok(())
 }
 

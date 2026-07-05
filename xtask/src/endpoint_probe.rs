@@ -71,10 +71,42 @@ pub struct ProbeResult {
     pub path: Option<String>,
     pub mutating: bool,
     pub verified_reference: Option<bool>,
-    pub status: String,
+    pub status: ProbeStatus,
     pub http_status: Option<u16>,
     pub verdict: String,
     pub detail: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ProbeStatus {
+    LiveOk,
+    ContractOk,
+    RequiresFixture,
+    Unsupported,
+    Rejected,
+    AuthFailed,
+    ServerError,
+    Skipped,
+    BudgetExhausted,
+    ContractError,
+}
+
+impl ProbeStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::LiveOk => "live_ok",
+            Self::ContractOk => "contract_ok",
+            Self::RequiresFixture => "requires_fixture",
+            Self::Unsupported => "unsupported",
+            Self::Rejected => "rejected",
+            Self::AuthFailed => "auth_failed",
+            Self::ServerError => "server_error",
+            Self::Skipped => "skipped",
+            Self::BudgetExhausted => "budget_exhausted",
+            Self::ContractError => "contract_error",
+        }
+    }
 }
 
 pub struct Config {
@@ -247,13 +279,13 @@ pub fn inert_body(name: &str, title: &str) -> Value {
     })
 }
 
-pub fn classify_status(status: u16) -> (&'static str, &'static str) {
+pub fn classify_status(status: u16) -> (&'static str, ProbeStatus) {
     match status {
-        200..=299 => ("live_ok", "live_ok"),
-        400 | 404 | 405 | 409 | 422 => ("route_reached_rejected_probe", "rejected"),
-        401 | 403 => ("auth_or_permission_failed", "auth_failed"),
-        500..=599 => ("server_error", "server_error"),
-        _ => ("unexpected_status", "rejected"),
+        200..=299 => ("live_ok", ProbeStatus::LiveOk),
+        400 | 404 | 405 | 409 | 422 => ("route_reached_rejected_probe", ProbeStatus::Rejected),
+        401 | 403 => ("auth_or_permission_failed", ProbeStatus::AuthFailed),
+        500..=599 => ("server_error", ProbeStatus::ServerError),
+        _ => ("unexpected_status", ProbeStatus::Rejected),
     }
 }
 
@@ -263,15 +295,14 @@ pub fn totals(results: &[ProbeResult]) -> Totals {
         ..Default::default()
     };
     for result in results {
-        match result.status.as_str() {
-            "live_ok" | "contract_ok" => totals.ok += 1,
-            "requires_fixture" => totals.requires_fixture += 1,
-            "unsupported" => totals.unsupported += 1,
-            "rejected" => totals.rejected += 1,
-            "auth_failed" => totals.auth_failed += 1,
-            "server_error" => totals.server_error += 1,
-            "skipped" | "budget_exhausted" => totals.skipped += 1,
-            _ => totals.rejected += 1,
+        match result.status {
+            ProbeStatus::LiveOk | ProbeStatus::ContractOk => totals.ok += 1,
+            ProbeStatus::RequiresFixture => totals.requires_fixture += 1,
+            ProbeStatus::Unsupported => totals.unsupported += 1,
+            ProbeStatus::Rejected | ProbeStatus::ContractError => totals.rejected += 1,
+            ProbeStatus::AuthFailed => totals.auth_failed += 1,
+            ProbeStatus::ServerError => totals.server_error += 1,
+            ProbeStatus::Skipped | ProbeStatus::BudgetExhausted => totals.skipped += 1,
         }
     }
     totals
@@ -292,7 +323,7 @@ pub fn skipped(
         path: None,
         mutating,
         verified_reference: None,
-        status: "skipped".to_string(),
+        status: ProbeStatus::Skipped,
         http_status: None,
         verdict: "disabled_by_mode".to_string(),
         detail: String::new(),
@@ -314,7 +345,7 @@ pub fn budget_exhausted(
         path: None,
         mutating,
         verified_reference: None,
-        status: "budget_exhausted".to_string(),
+        status: ProbeStatus::BudgetExhausted,
         http_status: None,
         verdict: "live_budget_exhausted".to_string(),
         detail: "increase UNIFI_VERIFY_MAX_REQUESTS or use contract mode".to_string(),

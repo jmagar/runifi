@@ -29,6 +29,7 @@ unifi(action="devices")           # APs, switches, gateways
 unifi(action="health")            # site health summary
 unifi(action="wlans")             # WiFi network configs
 unifi(action="alarms")            # active alarms
+unifi(action="events")            # recent controller events
 unifi(action="sysinfo")           # controller version/uptime
 unifi(action="me")                # authenticated user info
 unifi(action="help")              # built-in documentation
@@ -65,6 +66,7 @@ Action surface summary:
 | `wlans` | WiFi network configurations (SSID/band/security/VLAN) | — |
 | `health` | Site health summary (subsystems, AP counts, client counts) | — |
 | `alarms` | Active alarms and alerts | — |
+| `events` | Recent controller events | optional `limit` |
 | `sysinfo` | Controller version, build, hostname, uptime, timezone | — |
 | `me` | Authenticated user info (name, email, role) | — |
 | `help` | Returns built-in action documentation | — |
