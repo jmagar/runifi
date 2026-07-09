@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1](https://github.com/jmagar/unifi-rmcp/compare/v0.2.0...v0.2.1) (2026-07-09)
+
+
+### Bug Fixes
+
+* **ci:** switch OpenWiki to local openai-compatible proxy ([d647055](https://github.com/jmagar/unifi-rmcp/commit/d647055235a44500a4a30551c4ae7b1320cf4caf))
+
+
+### CI
+
+* add OpenWiki scheduled update workflow ([7ab20ef](https://github.com/jmagar/unifi-rmcp/commit/7ab20efaad44f937e1533ba2dd19f0b42a641cc9))
+* fix release asset upload repo context ([d33c9ca](https://github.com/jmagar/unifi-rmcp/commit/d33c9ca2771b535af8898566bdccb93af4424da6))
+* include dependency bumps in release notes ([76e189e](https://github.com/jmagar/unifi-rmcp/commit/76e189e96ac6333406550e5ea23125d3e9b1a34b))
+
 ## [0.2.0](https://github.com/jmagar/unifi-rmcp/compare/v0.1.1...v0.2.0) (2026-07-05)
 
 
