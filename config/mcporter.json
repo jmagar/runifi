@@ -1,8 +1,10 @@
 {
   "mcpServers": {
     "unifi": {
-      "url": "http://localhost:7474/mcp",
-      "transport": "http"
+      "baseUrl": "http://localhost:40030/mcp",
+      "headers": {
+        "Authorization": "$env:UNIFI_MCP_AUTH_HEADER"
+      }
     }
   }
 }
