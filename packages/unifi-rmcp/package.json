@@ -1,6 +1,6 @@
 {
   "name": "unifi-rmcp",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Node launcher for the UniFi RMCP server and runifi CLI binary.",
   "license": "MIT",
   "homepage": "https://github.com/jmagar/unifi-rmcp#readme",

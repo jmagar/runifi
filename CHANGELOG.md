@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3](https://github.com/jmagar/unifi-rmcp/compare/v0.2.2...v0.2.3) (2026-07-11)
+
+
+### Bug Fixes
+
+* load runtime env from unifi-rmcp home ([24cc64b](https://github.com/jmagar/unifi-rmcp/commit/24cc64b12d105ab2205f1f9f6e42a9a4ecd5fd2a))
+
+
+### Documentation
+
+* update OpenWiki ([f4306a0](https://github.com/jmagar/unifi-rmcp/commit/f4306a0bb6c29a554374da63c8dda0d9684518ab))
+
+
+### Tests
+
+* point mcporter at local unifi server ([294e34b](https://github.com/jmagar/unifi-rmcp/commit/294e34bc60b1c7fea48942fe7ba882d491a99ea0))
+
+
+### CI
+
+* skip mcp registry publish without secret ([2647842](https://github.com/jmagar/unifi-rmcp/commit/26478425c4594c7c4ada00a69a7f3c50eeac463f))
+
 ## [0.2.2](https://github.com/jmagar/unifi-rmcp/compare/v0.2.1...v0.2.2) (2026-07-10)
 
 
