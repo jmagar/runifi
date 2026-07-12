@@ -49,5 +49,7 @@
     "automation",
     "oauth",
     "http-server"
-  ]
+  ],
+  "mcpName": "ai.dinglebear/unifi-rmcp",
+  "binaryVersion": "0.2.3"
 }
