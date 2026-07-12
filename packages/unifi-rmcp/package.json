@@ -1,7 +1,7 @@
 {
   "name": "unifi-rmcp",
   "version": "0.2.4",
-  "description": "Node launcher for the UniFi RMCP server and runifi CLI binary.",
+  "description": "Node launcher for the UniFi Rust MCP server and runifi CLI for network controller operations.",
   "license": "MIT",
   "homepage": "https://github.com/jmagar/unifi-rmcp#readme",
   "repository": {
@@ -32,8 +32,22 @@
   },
   "keywords": [
     "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "rmcp",
+    "rust",
     "unifi",
     "ubiquiti",
-    "network"
+    "networking",
+    "wifi",
+    "network-controller",
+    "homelab",
+    "cli",
+    "claude-code",
+    "codex",
+    "gemini",
+    "automation",
+    "oauth",
+    "http-server"
   ]
 }
