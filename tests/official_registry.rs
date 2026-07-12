@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
-use rustifi::api::ApiSourceFamily;
-use rustifi::capabilities::{all_capabilities, find_capability};
 use serde_json::Value;
+use unifi_rmcp::api::ApiSourceFamily;
+use unifi_rmcp::capabilities::{all_capabilities, find_capability};
 
 #[test]
 fn official_registry_contains_all_network_operations() {
@@ -68,9 +68,9 @@ fn every_official_operation_has_registered_action() {
             .expect("official inventory should parse");
     for op in inventory["operations"].as_array().unwrap() {
         let operation_id = op["operation_id"].as_str().unwrap();
-        let action = rustifi::capabilities::official_network::action_name(operation_id);
+        let action = unifi_rmcp::capabilities::official_network::action_name(operation_id);
         assert!(
-            rustifi::capabilities::find_capability(&action).is_some(),
+            unifi_rmcp::capabilities::find_capability(&action).is_some(),
             "missing {action}"
         );
     }

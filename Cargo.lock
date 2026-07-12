@@ -2317,32 +2317,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rustifi"
-version = "0.2.4"
-dependencies = [
- "anyhow",
- "axum",
- "chrono",
- "dirs",
- "dotenvy",
- "lab-auth",
- "reqwest 0.12.28",
- "rmcp",
- "rustifi",
- "serde",
- "serde_json",
- "tempfile",
- "tokio",
- "toml",
- "tower",
- "tower-http",
- "tracing",
- "tracing-appender",
- "tracing-subscriber",
- "url",
-]
-
-[[package]]
 name = "rustix"
 version = "1.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3285,6 +3259,32 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e6e4313cd5fcd3dad5cafa179702e2b244f760991f45397d14d4ebf38247da75"
 
 [[package]]
+name = "unifi-rmcp"
+version = "0.2.4"
+dependencies = [
+ "anyhow",
+ "axum",
+ "chrono",
+ "dirs",
+ "dotenvy",
+ "lab-auth",
+ "reqwest 0.12.28",
+ "rmcp",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "tokio",
+ "toml",
+ "tower",
+ "tower-http",
+ "tracing",
+ "tracing-appender",
+ "tracing-subscriber",
+ "unifi-rmcp",
+ "url",
+]
+
+[[package]]
 name = "untrusted"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3773,10 +3773,10 @@ dependencies = [
  "anyhow",
  "regex",
  "reqwest 0.12.28",
- "rustifi",
  "serde",
  "serde_json",
  "time",
+ "unifi-rmcp",
 ]
 
 [[package]]

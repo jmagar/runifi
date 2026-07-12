@@ -2,9 +2,9 @@ use std::{collections::BTreeMap, path::Path};
 
 use anyhow::{Context, Result, bail};
 use reqwest::blocking::Client;
-use rustifi::api::{internal::InternalNetworkApi, official::OfficialNetworkApi, path};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
+use unifi_rmcp::api::{internal::InternalNetworkApi, official::OfficialNetworkApi, path};
 
 const CONNECTOR_PREFIXES: &[&str] = &["/proxy/network/integration/", "/proxy/protect/integration/"];
 
@@ -272,7 +272,7 @@ fn find_site_id(value: &Value) -> Option<String> {
 pub fn inert_body(name: &str, title: &str) -> Value {
     json!({
         "_rustifi_probe": true,
-        "name": format!("rustifi-endpoint-verification-{name}"),
+        "name": format!("unifi-rmcp-endpoint-verification-{name}"),
         "title": title,
         "cmd": "rustifi_endpoint_probe",
         "action": "rustifi_endpoint_probe"

@@ -1,12 +1,12 @@
 use serde_json::json;
 
-use rustifi::actions::{ActionDispatcher, ActionRequest};
-use rustifi::config::Config;
+use unifi_rmcp::actions::{ActionDispatcher, ActionRequest};
+use unifi_rmcp::config::Config;
 
 #[tokio::test]
 #[ignore]
 async fn internal_smoke_actions() {
-    rustifi::config::load_dotenv();
+    unifi_rmcp::config::load_dotenv();
     let config = Config::load().expect("config should load");
     let dispatcher = ActionDispatcher::new(config.unifi);
     for action in ["clients", "devices", "health", "me"] {

@@ -17,7 +17,7 @@
 - Internal Network reference rows sourced: 180.
 - Internal controller endpoint rows exposed at runtime: 175.
 - Internal reference meta tools accounted but not exposed as controller endpoints: 5.
-- Existing live-verified rustifi actions preserved: clients, devices, wlans, health, alarms, events, sysinfo, me.
+- Existing live-verified unifi-rmcp actions preserved: clients, devices, wlans, health, alarms, events, sysinfo, me.
 
 ## Implementation Status
 

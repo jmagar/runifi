@@ -2,7 +2,7 @@
 title: "Rust Build Setup"
 doc_type: "guide"
 status: "active"
-owner: "rustifi"
+owner: "unifi-rmcp"
 audience:
   - "contributors"
   - "agents"

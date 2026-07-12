@@ -112,14 +112,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Initial release of `rustifi` — UniFi MCP server bridging Claude to Ubiquiti network controllers
+- Initial release of `unifi-rmcp` — UniFi MCP server bridging Claude to Ubiquiti network controllers
 - MCP server with action-based tool dispatch (`unifi` tool, `action` parameter)
 - Actions: `clients`, `devices`, `wlans`, `health`, `alarms`, `events`, `sysinfo`, `me`, `help`
 - CLI thin shim with human-readable formatters and `--json` passthrough
 - Bearer token + Google OAuth authentication via `lab-auth`
 - Streamable HTTP transport on port 7474 + stdio transport
 - Self-signed TLS support (`UNIFI_SKIP_TLS_VERIFY=true` default)
-- Docker deployment with `ghcr.io/jmagar/rustifi` image
+- Docker deployment with `ghcr.io/jmagar/unifi-rmcp` image
 - Claude Code plugin with userConfig
 - `entrypoint.sh` with permission setup and runtime validation
 - Git LFS for pre-built plugin binaries in `bin/`

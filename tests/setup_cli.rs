@@ -28,6 +28,11 @@ fn version_banner_uses_runifi_identity() {
 }
 
 #[test]
+fn cargo_package_uses_unifi_rmcp_identity() {
+    assert_eq!(env!("CARGO_PKG_NAME"), "unifi-rmcp");
+}
+
+#[test]
 fn setup_plugin_hook_no_repair_json_contract() {
     let home = tempfile::tempdir().unwrap();
     let bin_dir = tempfile::tempdir().unwrap();

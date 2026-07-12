@@ -1,4 +1,4 @@
-# rustifi — CLAUDE.md
+# unifi-rmcp — CLAUDE.md
 
 UniFi network MCP server. Read-only REST API bridge for Ubiquiti controllers.
 

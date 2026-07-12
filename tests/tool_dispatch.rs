@@ -1,7 +1,7 @@
 /// Tests for MCP tool dispatch logic via the loopback AppState.
 /// These tests do not make real network calls — they verify routing and
 /// error handling within the tool shim itself.
-use rustifi::testing::loopback_state;
+use unifi_rmcp::testing::loopback_state;
 
 /// The help action returns a JSON object with a "help" key without hitting
 /// the network.
@@ -15,7 +15,7 @@ async fn help_action_returns_help_text() {
     let args = serde_json::json!({ "action": "help" });
     // Access via the public testing API — call execute_tool through the
     // documented module path.
-    let result = rustifi::testing::call_tool(&state, "unifi", args).await;
+    let result = unifi_rmcp::testing::call_tool(&state, "unifi", args).await;
     assert!(result.is_ok(), "help action should succeed: {:?}", result);
     let val = result.unwrap();
     let help_text = val["help"].as_str().unwrap_or("");
@@ -34,7 +34,7 @@ async fn help_action_returns_help_text() {
 async fn unknown_action_returns_error() {
     let state = loopback_state();
     let args = serde_json::json!({ "action": "nonexistent_action_xyz" });
-    let result = rustifi::testing::call_tool(&state, "unifi", args).await;
+    let result = unifi_rmcp::testing::call_tool(&state, "unifi", args).await;
     assert!(result.is_err(), "unknown action should return an error");
     let msg = result.unwrap_err().to_string();
     assert!(
@@ -48,7 +48,7 @@ async fn unknown_action_returns_error() {
 async fn missing_action_returns_error() {
     let state = loopback_state();
     let args = serde_json::json!({});
-    let result = rustifi::testing::call_tool(&state, "unifi", args).await;
+    let result = unifi_rmcp::testing::call_tool(&state, "unifi", args).await;
     assert!(result.is_err(), "missing action should return an error");
     let msg = result.unwrap_err().to_string();
     assert!(
@@ -62,38 +62,38 @@ async fn missing_action_returns_error() {
 async fn unknown_tool_name_returns_error() {
     let state = loopback_state();
     let args = serde_json::json!({ "action": "clients" });
-    let result = rustifi::testing::call_tool(&state, "unknown_tool", args).await;
+    let result = unifi_rmcp::testing::call_tool(&state, "unknown_tool", args).await;
     assert!(result.is_err(), "unknown tool name should return an error");
 }
 
 #[test]
 fn mcp_auth_scope_comes_from_capability_registry() {
-    assert_eq!(rustifi::mcp::required_scope_for("help"), None);
+    assert_eq!(unifi_rmcp::mcp::required_scope_for("help"), None);
     assert_eq!(
-        rustifi::mcp::required_scope_for("official_list_clients"),
+        unifi_rmcp::mcp::required_scope_for("official_list_clients"),
         Some("unifi:read")
     );
     assert_eq!(
-        rustifi::mcp::required_scope_for("unifi_list_networks"),
+        unifi_rmcp::mcp::required_scope_for("unifi_list_networks"),
         Some("unifi:read")
     );
     assert_eq!(
-        rustifi::mcp::required_scope_for("official_create_network"),
+        unifi_rmcp::mcp::required_scope_for("official_create_network"),
         Some("unifi:admin")
     );
     assert_eq!(
-        rustifi::mcp::required_scope_for("missing_action"),
+        unifi_rmcp::mcp::required_scope_for("missing_action"),
         Some("unifi:__deny__")
     );
 }
 
 #[tokio::test]
 async fn mutating_actions_require_admin_scope() {
-    let rf_scan = rustifi::capabilities::find_capability("unifi_trigger_rf_scan")
+    let rf_scan = unifi_rmcp::capabilities::find_capability("unifi_trigger_rf_scan")
         .expect("rf scan capability");
     assert!(rf_scan.mutating);
     assert_eq!(rf_scan.auth_scope.as_str(), "admin");
 
-    let clients = rustifi::capabilities::find_capability("clients").expect("clients capability");
+    let clients = unifi_rmcp::capabilities::find_capability("clients").expect("clients capability");
     assert_eq!(clients.auth_scope.as_str(), "read");
 }

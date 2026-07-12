@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# refresh-docs.sh — Refresh reference docs for rustifi (UniFi MCP)
+# refresh-docs.sh — Refresh reference docs for unifi-rmcp (UniFi MCP)
 # Pattern: §38 in docs/PATTERNS.md (rmcp-template)
 # Usage: scripts/refresh-docs.sh [--dry-run] [--skip-crawl] [--skip-repomix]
 #
@@ -26,7 +26,7 @@ while [[ $# -gt 0 ]]; do case "$1" in
 log() { printf '[refresh-docs] %s\n' "$*"; }
 refresh_scope() { if [[ "$SKIP_CRAWL" == true ]]; then printf repomix-only; elif [[ "$SKIP_REPOMIX" == true ]]; then printf crawl-only; else printf full; fi; }
 require_cmd() { command -v "$1" >/dev/null 2>&1 || { echo "ERROR: $1 not found" >&2;exit 1; }; }
-make_tmpdir() { mktemp -d "${TMPDIR:-/tmp}/rustifi-refresh-docs.XXXXXX"; }
+make_tmpdir() { mktemp -d "${TMPDIR:-/tmp}/unifi-rmcp-refresh-docs.XXXXXX"; }
 atomic_replace_dir() {
   local src="$1" dst="$2" parent backup
   parent="$(dirname -- "$dst")"; mkdir -p "$parent"
@@ -68,11 +68,8 @@ pack_repo() {
   mkdir -p "$(dirname -- "$tf")"; mv -- "$tmp_file" "$tf"; rm -rf -- "$tmp_dir"
 }
 write_index() {
-  local u=0 m=0
-  [[ -d "$REF_DIR/unifi/docs" ]] && u="$(find "$REF_DIR/unifi/docs" -type f|wc -l|tr -d ' ')"
-  [[ -d "$REF_DIR/mcp/docs"  ]] && m="$(find "$REF_DIR/mcp/docs"  -type f|wc -l|tr -d ' ')"
   cat > "$REF_DIR/INDEX.md" <<EOF
-# Reference Index — rustifi (UniFi MCP)
+# Reference Index — unifi-rmcp (UniFi MCP)
 | Path | Contents | Source |
 |---|---|---|
 | \`unifi/docs/\`   | UniFi developer + support docs crawl | developer.ui.com, help.ui.com |
@@ -92,10 +89,12 @@ snapshot_references() {
 snapshot_paths() { awk '{$1="";sub(/^  /,"");print}' "$1"; }
 ensure_changes_file() {
   mkdir -p "$REF_DIR"; [[ -f "$CHANGES_FILE" ]] && return 0
-  printf -- '---\ntitle: Reference Refresh Log — rustifi\ncreated_at: %s\n---\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$CHANGES_FILE"
+  # shellcheck disable=SC2016 # Literal frontmatter template; date is appended as an argument.
+  printf -- '---\ntitle: Reference Refresh Log — unifi-rmcp\ncreated_at: %s\n---\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$CHANGES_FILE"
 }
 append_changes_log() {
   ensure_changes_file
+  # shellcheck disable=SC2016 # Literal markdown template; values are passed as printf args.
   { printf '\n## %s\n\n- scope: `%s`\n- summary: `%s added, %s modified, %s removed`\n' \
       "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$(refresh_scope)" "$4" "$5" "$6"; } >> "$CHANGES_FILE"
 }

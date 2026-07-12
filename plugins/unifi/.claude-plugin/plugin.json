@@ -1,10 +1,10 @@
 {
   "name": "unifi",
-  "description": "UniFi network management via MCP — official, internal, and hybrid UniFi Network actions through the rustifi MCP server.",
+  "description": "UniFi network management via MCP — official, internal, and hybrid UniFi Network actions through the unifi-rmcp MCP server.",
   "author": {
     "name": "jmagar"
   },
-  "repository": "https://github.com/jmagar/rustifi",
+  "repository": "https://github.com/jmagar/unifi-rmcp",
   "license": "MIT",
   "keywords": [
     "unifi",
@@ -18,7 +18,7 @@
     "server_url": {
       "type": "string",
       "title": "Server URL",
-      "description": "Base URL the MCP client connects to. Keep the default http://localhost:40030 if running locally, or set to the remote server address (e.g. http://unifi-mcp.lan:40030). Must include the scheme and port; do NOT include a trailing /mcp path.",
+      "description": "Base URL the MCP client connects to. Keep the default http://localhost:40030 if running locally, or set to the remote server address (e.g. http://unifi-rmcp.lan:40030). Must include the scheme and port; do NOT include a trailing /mcp path.",
       "required": true,
       "default": "http://localhost:40030"
     },

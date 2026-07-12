@@ -3,7 +3,7 @@ members = [".", "xtask"]
 resolver = "2"
 
 [package]
-name = "rustifi"
+name = "unifi-rmcp"
 version = "0.2.4"
 edition = "2021"
 rust-version = "1.86"
@@ -65,7 +65,7 @@ dotenvy = "0.15.7"
 test-support = []
 
 [dev-dependencies]
-rustifi = { path = ".", features = ["test-support"] }
+unifi-rmcp = { path = ".", features = ["test-support"] }
 tempfile = "3"
 tower = { version = "0.5", features = ["util"] }
 rmcp = { version = "1.6.0", default-features = false, features = [

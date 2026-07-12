@@ -4,7 +4,7 @@ description: >
   Use this skill whenever the user asks about their UniFi network — connected clients, who's
   on the WiFi, which devices are online, access points, switches, gateways, network health,
   site health, active alarms, network events, WiFi configurations (SSIDs), controller sysinfo,
-  or their authenticated UniFi identity. This skill covers the rustifi MCP server, a Rust bridge
+  or their authenticated UniFi identity. This skill covers the unifi-rmcp MCP server, a Rust bridge
   to official and internal UniFi APIs via X-API-KEY. Legacy convenience actions are read-only;
   mutating actions require explicit admin authorization. Trigger phrases include: "UniFi clients",
   "connected clients", "who's on the network", "UniFi devices", "access points", "APs",
@@ -15,9 +15,9 @@ description: >
   and auth that this skill encodes.
 ---
 
-# UniFi Skill (rustifi)
+# UniFi Skill (unifi-rmcp)
 
-Access to a UniFi network controller via the **rustifi** MCP server. Data is fetched from the documented Network Integration API or internal controller APIs using X-API-KEY authentication. Mutating actions require MCP admin authorization.
+Access to a UniFi network controller via the **unifi-rmcp** MCP server. Data is fetched from the documented Network Integration API or internal controller APIs using X-API-KEY authentication. Mutating actions require MCP admin authorization.
 
 ## Quick Reference
 
@@ -124,11 +124,11 @@ unifi(action="me")
 
 ## Tier 2 — CLI Binary (fallback when MCP is unavailable)
 
-Binary: `/home/jmagar/workspace/rustifi/target/release/runifi`
+Binary: `/home/jmagar/workspace/unifi-rmcp/target/release/runifi`
 
 If the binary does not exist, build it first:
 ```bash
-cd /home/jmagar/workspace/rustifi && cargo build --release
+cd /home/jmagar/workspace/unifi-rmcp && cargo build --release
 # or run without building:
 cargo run --bin runifi -- <command>
 ```
@@ -221,7 +221,7 @@ omit the `/proxy/network` prefix entirely.
    human display; fall back to checking `state==1` when `state_str` is absent.
 
 5. **Self-signed TLS is expected.** The UniFi controller uses a self-signed certificate by
-   default. `UNIFI_SKIP_TLS_VERIFY=true` is the default in rustifi; use `-sk` in curl.
+   default. `UNIFI_SKIP_TLS_VERIFY=true` is the default in unifi-rmcp; use `-sk` in curl.
 
 6. **`meta.rc` should be `"ok"`.** If the UniFi API returns an error, `meta.rc` will not be
    `"ok"`. The client raises an HTTP error in this case, so you'll see an anyhow error rather

@@ -2,8 +2,8 @@
 //! they only verify that argument strings map to the right command variants
 //! and flags are extracted correctly.
 
-use rustifi::cli::CliCommand;
 use serde_json::json;
+use unifi_rmcp::cli::CliCommand;
 
 fn parse(args: &[&str]) -> anyhow::Result<(CliCommand, bool)> {
     let owned = args.iter().map(|arg| arg.to_string()).collect::<Vec<_>>();
@@ -100,11 +100,11 @@ fn malformed_generated_action_args_return_errors() {
 #[test]
 fn setup_plugin_hook_parse_is_recognized() {
     let args = vec!["setup".into(), "plugin-hook".into(), "--no-repair".into()];
-    let parsed = rustifi::setup::SetupCommand::parse(&args).unwrap();
+    let parsed = unifi_rmcp::setup::SetupCommand::parse(&args).unwrap();
     assert!(matches!(
         parsed,
         Some((
-            rustifi::setup::SetupCommand::PluginHook { no_repair: true },
+            unifi_rmcp::setup::SetupCommand::PluginHook { no_repair: true },
             false
         ))
     ));

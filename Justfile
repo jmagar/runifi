@@ -45,7 +45,7 @@ check-env:
 # ── Docker ────────────────────────────────────────────────────────────────────
 
 docker-build:
-    docker build -f config/Dockerfile -t rustifi .
+    docker build -f config/Dockerfile -t unifi-rmcp .
 
 docker-up:
     docker compose up -d
@@ -112,18 +112,18 @@ generate-cli:
       -H "Authorization: Bearer ${UNIFI_MCP_TOKEN:-}" \
       -H "Accept: application/json, text/event-stream" \
       http://localhost:40030/mcp/tools/list 2>/dev/null | sha256sum | cut -d' ' -f1 || echo "nohash")
-    cache_file="dist/.cache/rustifi-cli.schema_hash"
-    if [[ -f "$cache_file" ]] && [[ "$(cat "$cache_file")" == "$current_hash" ]] && [[ -f "dist/rustifi-cli" ]]; then
-      echo "SKIP: tool schema unchanged — use existing dist/rustifi-cli"
+    cache_file="dist/.cache/unifi-rmcp-cli.schema_hash"
+    if [[ -f "$cache_file" ]] && [[ "$(cat "$cache_file")" == "$current_hash" ]] && [[ -f "dist/unifi-rmcp-cli" ]]; then
+      echo "SKIP: tool schema unchanged — use existing dist/unifi-rmcp-cli"
       exit 0
     fi
     timeout 30 mcporter generate-cli \
       --command http://localhost:40030/mcp \
       --header "Authorization: Bearer ${UNIFI_MCP_TOKEN:-}" \
-      --name rustifi-cli \
-      --output dist/rustifi-cli
+      --name unifi-rmcp-cli \
+      --output dist/unifi-rmcp-cli
     printf '%s' "$current_hash" > "$cache_file"
-    echo "Generated dist/rustifi-cli"
+    echo "Generated dist/unifi-rmcp-cli"
 
 clean:
     cargo clean

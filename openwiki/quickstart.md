@@ -1,10 +1,10 @@
-# rustifi - UniFi MCP Server
+# unifi-rmcp - UniFi MCP Server
 
-**rustifi** is a Rust-based MCP (Model Context Protocol) server that bridges AI clients to Ubiquiti UniFi network controllers. It provides read-only access to UniFi networks through both CLI tools and MCP server interfaces.
+**unifi-rmcp** is a Rust-based MCP (Model Context Protocol) server that bridges AI clients to Ubiquiti UniFi network controllers. It provides read-only access to UniFi networks through both CLI tools and MCP server interfaces.
 
-## What rustifi Does
+## What unifi-rmcp Does
 
-rustifi exposes UniFi controller REST APIs to AI clients (Claude, Cursor, etc.) and provides a CLI for direct querying. It supports:
+unifi-rmcp exposes UniFi controller REST APIs to AI clients (Claude, Cursor, etc.) and provides a CLI for direct querying. It supports:
 
 - **Official Network Integration API** — Documented UniFi OS endpoints under `/proxy/network/integration/v1/`
 - **Internal V1/V2 Site APIs** — Preserved controller actions under `/proxy/network/api/s/{site}/` and `/proxy/network/v2/api/site/{site}/`
@@ -59,7 +59,7 @@ cargo run --bin runifi -- mcp
 
 ## Architecture Overview
 
-rustifi follows a strict layered architecture:
+unifi-rmcp follows a strict layered architecture:
 
 ```
 UnifiClient (src/unifi.rs)   — HTTP client, no business logic
@@ -73,7 +73,7 @@ tools.rs / cli.rs            — thin shims (parse + dispatch + format)
 
 ### Action Dispatch System
 
-rustifi uses a capability-based action dispatch system:
+unifi-rmcp uses a capability-based action dispatch system:
 
 - **official_* actions** — 78+ documented Network Integration API operations
 - **unifi_* actions** — Internal controller-compatible actions
@@ -116,7 +116,7 @@ See [OAUTH.md](docs/OAUTH.md) for OAuth setup details.
 
 ### MCP Tool Interface
 
-rustifi exposes one MCP tool named `unifi`. The required `action` argument selects the operation:
+unifi-rmcp exposes one MCP tool named `unifi`. The required `action` argument selects the operation:
 
 ```json
 {
@@ -235,7 +235,7 @@ port = 40030
 
 ### Developer Documentation
 
-- [AGENTS.md](AGENTS.md) — Essential commands for working on rustifi
+- [AGENTS.md](AGENTS.md) — Essential commands for working on unifi-rmcp
 - [docs/RUST.md](docs/RUST.md) — Rust toolchain and workspace notes
 - [docs/INVENTORY.md](docs/INVENTORY.md) — Component inventory
 
@@ -246,7 +246,7 @@ port = 40030
 
 ## Essential Commands
 
-For developers working on rustifi:
+For developers working on unifi-rmcp:
 
 ```bash
 cargo check                              # Type-check (must pass before any PR)

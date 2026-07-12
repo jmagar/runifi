@@ -268,7 +268,7 @@ fn env_list(key: &str, target: &mut Vec<String>) {
 
 // ── Appdata directory ─────────────────────────────────────────────────────────
 
-/// Resolve the local data directory for rustifi.
+/// Resolve the local data directory for unifi-rmcp.
 ///
 /// - Inside a container (`/.dockerenv` exists or `RUNNING_IN_CONTAINER` set): `/data`
 /// - Bare-metal: `~/.unifi-rmcp/`

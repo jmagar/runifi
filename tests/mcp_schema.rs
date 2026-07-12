@@ -1,4 +1,4 @@
-use rustifi::mcp::schemas::tool_definitions;
+use unifi_rmcp::mcp::schemas::tool_definitions;
 
 #[test]
 fn schema_contains_official_and_internal_actions() {

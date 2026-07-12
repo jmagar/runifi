@@ -1,8 +1,8 @@
-# OpenWiki Documentation Plan for rustifi
+# OpenWiki Documentation Plan for unifi-rmcp
 
 ## Repository Analysis
 
-**rustifi** is a Rust-based MCP (Model Context Protocol) server that bridges AI clients (Claude, Cursor, etc.) to Ubiquiti UniFi network controllers. It exposes both official and internal UniFi REST APIs through a unified MCP tool interface.
+**unifi-rmcp** is a Rust-based MCP (Model Context Protocol) server that bridges AI clients (Claude, Cursor, etc.) to Ubiquiti UniFi network controllers. It exposes both official and internal UniFi REST APIs through a unified MCP tool interface.
 
 ### Key Characteristics
 - **Language**: Rust (1.86+)
@@ -18,7 +18,7 @@
 Since this is a small-to-medium repository with clear domain boundaries, the documentation should be:
 
 1. **openwiki/quickstart.md** - Single comprehensive entry point covering:
-   - What rustifi is and what it does
+   - What unifi-rmcp is and what it does
    - Quickstart for CLI use
    - Quickstart for MCP server (HTTP + stdio)
    - Links to detailed external docs in /docs directory
@@ -27,7 +27,7 @@ Since this is a small-to-medium repository with clear domain boundaries, the doc
 
 ### Why This Structure Works
 
-- **Single repository focus**: rustifi has one clear domain (UniFi API bridge)
+- **Single repository focus**: unifi-rmcp has one clear domain (UniFi API bridge)
 - **Existing comprehensive docs**: The /docs directory already contains extensive documentation (CLI.md, CONFIG.md, SETUP.md, OAUTH.md, etc.)
 - **No need to duplicate**: OpenWiki should summarize and link, not replace existing docs
 - **Small repository**: ~30-40 source files, single binary, clear architecture
@@ -35,7 +35,7 @@ Since this is a small-to-medium repository with clear domain boundaries, the doc
 ## openwiki/quickstart.md Content Plan
 
 ### Section 1: Repository Overview
-- What rustifi is (UniFi MCP server)
+- What unifi-rmcp is (UniFi MCP server)
 - What it does (bridges AI clients to UniFi controllers)
 - Key APIs (official Network Integration + internal site APIs)
 - Binary name: `runifi`

@@ -73,7 +73,6 @@ pub fn verify() -> Result<()> {
     if mode.is_live() {
         load_dotenv(".env")?;
         load_dotenv("/home/jmagar/.unifi-rmcp/.env")?;
-        load_dotenv("/home/jmagar/.rustifi/.env")?;
         load_dotenv("/home/jmagar/.labby/.env")?;
 
         let mut cfg = Config::from_env()?;

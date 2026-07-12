@@ -2,15 +2,15 @@ use anyhow::Result;
 use std::sync::Arc;
 
 use rmcp::{transport::stdio, ServiceExt};
-use rustifi::{
+use tracing::info;
+use tracing_subscriber::{fmt, EnvFilter};
+use unifi_rmcp::{
     app::UnifiService,
     cli,
     config::{AuthMode, Config},
     mcp::{self, AppState, AuthPolicy},
     unifi::UnifiClient,
 };
-use tracing::info;
-use tracing_subscriber::{fmt, EnvFilter};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -41,14 +41,14 @@ async fn main() -> Result<()> {
         let config = Config::load().unwrap_or_default();
         return cli::doctor::run_doctor(&config, json).await;
     }
-    if let Some((command, json)) = rustifi::setup::SetupCommand::parse(&args)? {
-        return rustifi::setup::run(command, json);
+    if let Some((command, json)) = unifi_rmcp::setup::SetupCommand::parse(&args)? {
+        return unifi_rmcp::setup::run(command, json);
     }
 
     // Load ~/.unifi/.env (or /data/.env in a container) before any Config::load
     // so the binary works on bare metal without a process manager injecting env.
     // Non-overriding: explicit process env still wins.
-    rustifi::config::load_dotenv();
+    unifi_rmcp::config::load_dotenv();
 
     let stdio_mode = matches!(args.as_slice(), [c] if c == "mcp");
     let serve_mode = args.is_empty()
@@ -196,7 +196,7 @@ Environment:
 
 /// Refuse to bind to a non-loopback address without authentication configured,
 /// unless the operator explicitly sets UNIFI_NOAUTH=true.
-fn validate_bind_security(config: &rustifi::config::McpConfig) -> anyhow::Result<()> {
+fn validate_bind_security(config: &unifi_rmcp::config::McpConfig) -> anyhow::Result<()> {
     let is_loopback =
         config.host.starts_with("127.") || config.host == "::1" || config.host == "localhost";
     let has_auth = !config.no_auth && config.api_token.is_some();

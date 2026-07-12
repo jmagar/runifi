@@ -1,7 +1,7 @@
 use serde_json::json;
 
-use rustifi::actions::{ActionDispatcher, ActionRequest};
-use rustifi::config::UnifiConfig;
+use unifi_rmcp::actions::{ActionDispatcher, ActionRequest};
+use unifi_rmcp::config::UnifiConfig;
 
 fn test_config(url: impl Into<String>) -> UnifiConfig {
     UnifiConfig {
@@ -28,7 +28,7 @@ async fn connector_path_rejects_non_integration_prefix() {
 
 #[test]
 fn existing_clients_action_is_internal() {
-    let cap = rustifi::capabilities::find_capability("clients").expect("clients capability");
+    let cap = unifi_rmcp::capabilities::find_capability("clients").expect("clients capability");
     assert_eq!(cap.path.as_deref(), Some("/stat/sta"));
 }
 
@@ -350,16 +350,16 @@ fn all_hybrid_aliases_resolve_to_expected_targets() {
     ];
 
     for (action, internal, official) in cases {
-        let (target, params) = rustifi::actions::hybrid::resolve(action, &json!({})).unwrap();
+        let (target, params) = unifi_rmcp::actions::hybrid::resolve(action, &json!({})).unwrap();
         assert_eq!(target, internal, "{action} should default to internal");
         assert_eq!(params, json!({}));
 
         let (target, params) =
-            rustifi::actions::hybrid::resolve(action, &json!({"siteId": "site-1"})).unwrap();
+            unifi_rmcp::actions::hybrid::resolve(action, &json!({"siteId": "site-1"})).unwrap();
         assert_eq!(target, official, "{action} should use official with siteId");
         assert_eq!(params, json!({"siteId": "site-1"}));
 
-        let (target, params) = rustifi::actions::hybrid::resolve(
+        let (target, params) = unifi_rmcp::actions::hybrid::resolve(
             action,
             &json!({"siteId": "site-1", "prefer": "internal"}),
         )
@@ -372,11 +372,12 @@ fn all_hybrid_aliases_resolve_to_expected_targets() {
 #[test]
 fn hybrid_preference_validation_is_explicit() {
     let (target, params) =
-        rustifi::actions::hybrid::resolve("list_clients", &json!({"prefer": "official"})).unwrap();
+        unifi_rmcp::actions::hybrid::resolve("list_clients", &json!({"prefer": "official"}))
+            .unwrap();
     assert_eq!(target, "official_list_clients");
     assert_eq!(params, json!({}));
 
-    let message = rustifi::actions::hybrid::resolve("list_clients", &json!({"prefer": "maybe"}))
+    let message = unifi_rmcp::actions::hybrid::resolve("list_clients", &json!({"prefer": "maybe"}))
         .unwrap_err()
         .to_string();
     assert!(message.contains("unknown hybrid preference"));

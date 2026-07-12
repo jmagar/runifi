@@ -14,7 +14,7 @@ RUN --mount=type=cache,id=unifi-rmcp-cargo-registry,target=/usr/local/cargo/regi
     mkdir -p src xtask/src && \
     echo "fn main() {}" > src/main.rs && \
     echo "fn main() {}" > xtask/src/main.rs && \
-    cargo build --release --locked -p rustifi && \
+    cargo build --release --locked -p unifi-rmcp && \
     rm -rf src
 
 # Build real binary
@@ -23,7 +23,7 @@ COPY src/ src/
 RUN --mount=type=cache,id=unifi-rmcp-cargo-registry,target=/usr/local/cargo/registry,sharing=locked \
     --mount=type=cache,id=unifi-rmcp-cargo-git,target=/usr/local/cargo/git,sharing=locked \
     --mount=type=cache,id=unifi-rmcp-cargo-target,target=/app/target,sharing=locked \
-    touch src/main.rs && cargo build --release --locked -p rustifi && cp target/release/runifi /usr/local/bin/runifi
+    touch src/main.rs && cargo build --release --locked -p unifi-rmcp && cp target/release/runifi /usr/local/bin/runifi
 
 # Runtime — minimal debian image with ca-certificates for TLS to the UniFi controller
 FROM debian:bookworm-slim

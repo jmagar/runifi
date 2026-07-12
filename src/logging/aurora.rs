@@ -1,7 +1,7 @@
 /// Aurora ANSI-256 color palette constants.
 ///
 /// These match `lab/crates/lab/src/output/theme.rs` exactly so that
-/// rustifi console logs are visually consistent with the rest of the
+/// runifi console logs are visually consistent with the rest of the
 /// homelab tooling.
 pub const SERVICE_NAME: u8 = 211; // pink        (255,175,215)
 pub const ACCENT_PRIMARY: u8 = 39; // bright blue (41,182,246)
