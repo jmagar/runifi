@@ -1,6 +1,6 @@
 use serde_json::json;
 
-use unifi_rmcp::actions::{ActionDispatcher, ActionRequest};
+use unifi::{ActionDispatcher, ActionRequest};
 use unifi_rmcp::config::Config;
 
 #[tokio::test]

@@ -1,6 +1,8 @@
 use anyhow::{Result, bail};
-use unifi::api::ApiSourceFamily;
-use unifi_rmcp::capabilities::{AuthScope, Capability, find_capability, official_network};
+use unifi::{
+    api::ApiSourceFamily,
+    capabilities::{AuthScope, Capability, find_capability, official_network},
+};
 
 use crate::endpoint_probe::{
     Config, InternalTool, OfficialOperation, ProbeStatus, Report, official_path,

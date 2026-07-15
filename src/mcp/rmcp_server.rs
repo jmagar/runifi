@@ -16,8 +16,8 @@ use rmcp::{
 };
 use serde_json::{Map, Value};
 
-use crate::capabilities::{find_capability, AuthScope};
 use crate::config::McpConfig;
+use unifi::capabilities::{find_capability, AuthScope};
 
 use super::{prompts, schemas::tool_definitions, tools::execute_tool, AppState, AuthPolicy};
 

@@ -2,7 +2,8 @@ use std::sync::Arc;
 
 use lab_auth::AuthLayer;
 
-use crate::{app::UnifiService, config::McpConfig};
+use crate::config::McpConfig;
+use unifi::UnifiService;
 
 mod prompts;
 mod rmcp_server;

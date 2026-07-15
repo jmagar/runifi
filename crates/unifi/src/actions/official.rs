@@ -2,9 +2,9 @@ use anyhow::{bail, Context, Result};
 use reqwest::Method;
 use serde_json::{json, Value};
 
-use crate::capabilities::Capability;
-use unifi::{
+use crate::{
     api::{official::OfficialNetworkApi, path, ApiSourceFamily},
+    capabilities::Capability,
     http, UnifiConfig,
 };
 

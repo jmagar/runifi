@@ -3,9 +3,8 @@ pub mod doctor;
 use anyhow::{bail, Result};
 use serde_json::{json, Value};
 
-use crate::actions::ActionRequest;
-use crate::app::UnifiService;
-use crate::capabilities::find_capability;
+use unifi::UnifiService;
+use unifi::{capabilities::find_capability, ActionRequest};
 
 // ── command enum ──────────────────────────────────────────────────────────────
 

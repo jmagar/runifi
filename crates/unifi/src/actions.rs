@@ -6,7 +6,7 @@ use anyhow::{bail, Result};
 use serde_json::Value;
 
 use crate::capabilities::find_capability;
-use unifi::{api::ApiSourceFamily, UnifiConfig};
+use crate::{api::ApiSourceFamily, UnifiConfig};
 
 #[derive(Debug, Clone)]
 pub struct ActionRequest {

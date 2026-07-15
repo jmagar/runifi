@@ -1,6 +1,6 @@
 use serde_json::{json, Value};
 
-use crate::capabilities::all_capabilities;
+use unifi::capabilities::all_capabilities;
 
 pub fn tool_definitions() -> Vec<Value> {
     let capabilities = all_capabilities();

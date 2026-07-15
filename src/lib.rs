@@ -1,10 +1,13 @@
-pub mod actions;
-pub mod app;
-pub mod capabilities;
+pub mod app {
+    pub use unifi::UnifiService;
+}
+
 pub mod cli;
 pub mod config;
 pub mod mcp;
 pub mod setup;
+
+pub use unifi::{actions, capabilities, UnifiService};
 
 #[cfg(any(test, feature = "test-support"))]
 #[doc(hidden)]

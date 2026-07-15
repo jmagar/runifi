@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use serde_json::Value;
 use unifi::api::ApiSourceFamily;
-use unifi_rmcp::capabilities::{all_capabilities, find_capability};
+use unifi::capabilities::{all_capabilities, find_capability};
 
 #[test]
 fn internal_registry_contains_reference_count() {

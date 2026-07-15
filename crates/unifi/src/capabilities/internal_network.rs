@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
+use crate::api::ApiSourceFamily;
 use crate::capabilities::{AuthScope, Capability};
-use unifi::api::ApiSourceFamily;
 
 #[derive(Debug, Deserialize)]
 struct Inventory {
@@ -22,7 +22,7 @@ struct Tool {
 
 pub fn capabilities() -> Vec<Capability> {
     let inventory: Inventory = serde_json::from_str(include_str!(
-        "../../data/unifi_internal_endpoint_models.json"
+        "../../../../data/unifi_internal_endpoint_models.json"
     ))
     .expect("internal UniFi endpoint models should be valid JSON");
     let mut caps = inventory

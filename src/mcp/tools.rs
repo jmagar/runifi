@@ -1,6 +1,6 @@
 use serde_json::{json, Value};
 
-use crate::actions::ActionRequest;
+use unifi::ActionRequest;
 
 use super::AppState;
 

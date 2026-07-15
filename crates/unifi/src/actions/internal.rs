@@ -3,9 +3,9 @@ use reqwest::Method;
 use serde_json::{json, Value};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use crate::capabilities::Capability;
-use unifi::{
+use crate::{
     api::{internal::InternalNetworkApi, path, ApiSourceFamily},
+    capabilities::Capability,
     http, UnifiClient, UnifiConfig,
 };
 

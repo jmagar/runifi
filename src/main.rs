@@ -4,9 +4,8 @@ use std::sync::Arc;
 use rmcp::{transport::stdio, ServiceExt};
 use tracing::info;
 use tracing_subscriber::{fmt, EnvFilter};
-use unifi::UnifiClient;
+use unifi::{UnifiClient, UnifiService};
 use unifi_rmcp::{
-    app::UnifiService,
     cli,
     config::{AuthMode, Config},
     mcp::{self, AppState, AuthPolicy},
