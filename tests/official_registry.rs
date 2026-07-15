@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use serde_json::Value;
-use unifi_rmcp::api::ApiSourceFamily;
+use unifi::api::ApiSourceFamily;
 use unifi_rmcp::capabilities::{all_capabilities, find_capability};
 
 #[test]

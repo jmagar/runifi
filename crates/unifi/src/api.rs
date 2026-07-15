@@ -1,4 +1,3 @@
-pub mod http;
 pub mod internal;
 pub mod official;
 pub mod path;

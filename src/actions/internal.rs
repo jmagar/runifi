@@ -3,10 +3,11 @@ use reqwest::Method;
 use serde_json::{json, Value};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use crate::api::{http, internal::InternalNetworkApi, path, ApiSourceFamily};
 use crate::capabilities::Capability;
-use crate::config::UnifiConfig;
-use crate::unifi::UnifiClient;
+use unifi::{
+    api::{internal::InternalNetworkApi, path, ApiSourceFamily},
+    http, UnifiClient, UnifiConfig,
+};
 
 pub async fn execute(cfg: &UnifiConfig, capability: &Capability, params: &Value) -> Result<Value> {
     if capability.source != ApiSourceFamily::Internal {
@@ -92,10 +93,10 @@ async fn execute_generic(
     Ok(value)
 }
 
-fn normalize_internal_request<'a>(
+fn normalize_internal_request(
     action: &str,
     method: &mut Method,
-    path: &mut &'a str,
+    path: &mut &str,
     params: &mut Value,
 ) {
     match action {

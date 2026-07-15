@@ -2,24 +2,20 @@ use anyhow::{Context, Result};
 use reqwest::Client;
 use serde_json::Value;
 
-use crate::api::http;
-use crate::config::UnifiConfig;
+use crate::{http, UnifiConfig};
 
 /// HTTP REST client for UniFi controllers.
 ///
-/// Supports both modern UniFi OS (UDM/UDR) with `/proxy/network` path prefix
-/// and legacy controllers (non-UDM, port 8443) without that prefix.
-///
-/// Authentication uses the `X-API-KEY` header (preferred for UniFi OS 3.x+).
+/// Supports both modern UniFi OS with `/proxy/network` and legacy controllers
+/// without that prefix. Authentication uses the `X-API-KEY` header.
 #[derive(Clone)]
 pub struct UnifiClient {
     client: Client,
-    /// Base URL, e.g. `https://unifi.local`
+    /// Base URL, e.g. `https://unifi.local`.
     pub url: String,
     api_key: String,
     site: String,
     skip_tls_verify: bool,
-    /// When true, skip `/proxy/network` prefix (legacy controllers)
     legacy: bool,
 }
 
@@ -27,13 +23,13 @@ impl UnifiClient {
     pub fn new(cfg: &UnifiConfig) -> Result<Self> {
         if cfg.url.is_empty() {
             anyhow::bail!(
-                "UNIFI_URL is not set — set it to your controller's base URL, \
+                "UNIFI_URL is not set - set it to your controller's base URL, \
                  e.g. UNIFI_URL=https://unifi.local"
             );
         }
         if cfg.api_key.is_empty() {
             anyhow::bail!(
-                "UNIFI_API_KEY is not set — generate an API key in \
+                "UNIFI_API_KEY is not set - generate an API key in \
                  UniFi Settings > API"
             );
         }
@@ -58,9 +54,6 @@ impl UnifiClient {
         }
     }
 
-    // ── path helpers ──────────────────────────────────────────────────────────
-
-    /// Build a site-scoped path, e.g. `stat/sta` → `/proxy/network/api/s/default/stat/sta`
     fn site_path(&self, suffix: &str) -> String {
         let prefix = if self.legacy { "" } else { "/proxy/network" };
         format!("{prefix}/api/s/{site}/{suffix}", site = self.site)
@@ -74,8 +67,6 @@ impl UnifiClient {
         }
     }
 
-    // ── HTTP ──────────────────────────────────────────────────────────────────
-
     async fn get(&self, path: &str) -> Result<Value> {
         let url = format!("{}{path}", self.url);
         let resp = self
@@ -88,13 +79,13 @@ impl UnifiClient {
             .map_err(|e| {
                 if e.is_timeout() {
                     anyhow::anyhow!(
-                        "UniFi controller at {url} timed out after 30s — \
+                        "UniFi controller at {url} timed out after 30s - \
                          check UNIFI_SKIP_TLS_VERIFY=true for self-signed certs, \
                          or verify the controller is reachable"
                     )
                 } else if e.is_connect() {
                     anyhow::anyhow!(
-                        "UniFi controller at {url} unreachable — \
+                        "UniFi controller at {url} unreachable - \
                          check UNIFI_URL is correct and the controller is running. \
                          For self-signed certs set UNIFI_SKIP_TLS_VERIFY=true"
                     )
@@ -107,7 +98,7 @@ impl UnifiClient {
 
         if status == reqwest::StatusCode::UNAUTHORIZED {
             anyhow::bail!(
-                "UNIFI_API_KEY rejected by {url} (HTTP 401) — \
+                "UNIFI_API_KEY rejected by {url} (HTTP 401) - \
                  generate a new API key in UniFi Settings > API"
             );
         }
@@ -121,11 +112,8 @@ impl UnifiClient {
             anyhow::bail!("UniFi HTTP {status} from {url}: {body}");
         }
 
-        // UniFi wraps responses as {"meta": {"rc": "ok"}, "data": [...]}
         Ok(body)
     }
-
-    // ── API methods ───────────────────────────────────────────────────────────
 
     /// Connected clients (wireless and wired).
     pub async fn clients(&self) -> Result<Value> {

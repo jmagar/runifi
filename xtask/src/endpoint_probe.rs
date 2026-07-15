@@ -4,7 +4,7 @@ use anyhow::{Context, Result, bail};
 use reqwest::blocking::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use unifi_rmcp::api::{internal::InternalNetworkApi, official::OfficialNetworkApi, path};
+use unifi::api::{internal::InternalNetworkApi, official::OfficialNetworkApi, path};
 
 const CONNECTOR_PREFIXES: &[&str] = &["/proxy/network/integration/", "/proxy/protect/integration/"];
 
@@ -157,11 +157,11 @@ impl Config {
 
 fn resolved_base_url(raw_url: &str) -> Result<String> {
     let mut url = reqwest::Url::parse(raw_url.trim()).context("UNIFI_URL must be a URL")?;
-    if let Ok(resolve_ip) = std::env::var("UNIFI_RESOLVE_IP") {
-        if !resolve_ip.trim().is_empty() {
-            url.set_host(Some(resolve_ip.trim()))
-                .map_err(|_| anyhow::anyhow!("UNIFI_RESOLVE_IP is not a valid host"))?;
-        }
+    if let Ok(resolve_ip) = std::env::var("UNIFI_RESOLVE_IP")
+        && !resolve_ip.trim().is_empty()
+    {
+        url.set_host(Some(resolve_ip.trim()))
+            .map_err(|_| anyhow::anyhow!("UNIFI_RESOLVE_IP is not a valid host"))?;
     }
     Ok(url.as_str().trim_end_matches('/').to_string())
 }

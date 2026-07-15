@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
-use crate::api::ApiSourceFamily;
 use crate::capabilities::{AuthScope, Capability};
+use unifi::api::ApiSourceFamily;
 
 #[derive(Debug, Deserialize)]
 struct Inventory {

@@ -2,7 +2,7 @@ use anyhow::Result;
 use serde_json::Value;
 
 use crate::actions::{ActionDispatcher, ActionRequest};
-use crate::unifi::UnifiClient;
+use unifi::UnifiClient;
 
 /// Business service layer. All logic lives here.
 /// CLI and MCP are thin shims that call into this.

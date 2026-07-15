@@ -1,5 +1,5 @@
 [workspace]
-members = [".", "xtask"]
+members = [".", "crates/unifi", "xtask"]
 resolver = "2"
 
 [package]
@@ -64,6 +64,7 @@ anyhow = "1"
 # Paths
 dirs = "5"
 dotenvy = "0.15.7"
+unifi = { path = "crates/unifi" }
 
 [features]
 test-support = []

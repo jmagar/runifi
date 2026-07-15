@@ -3259,6 +3259,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e6e4313cd5fcd3dad5cafa179702e2b244f760991f45397d14d4ebf38247da75"
 
 [[package]]
+name = "unifi"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "reqwest 0.12.28",
+ "serde",
+ "serde_json",
+ "tracing",
+]
+
+[[package]]
 name = "unifi-rmcp"
 version = "0.2.4"
 dependencies = [
@@ -3280,6 +3291,7 @@ dependencies = [
  "tracing",
  "tracing-appender",
  "tracing-subscriber",
+ "unifi",
  "unifi-rmcp",
  "url",
 ]
@@ -3776,6 +3788,7 @@ dependencies = [
  "serde",
  "serde_json",
  "time",
+ "unifi",
  "unifi-rmcp",
 ]
 

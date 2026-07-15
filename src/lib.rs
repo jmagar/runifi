@@ -1,12 +1,10 @@
 pub mod actions;
-pub mod api;
 pub mod app;
 pub mod capabilities;
 pub mod cli;
 pub mod config;
 pub mod mcp;
 pub mod setup;
-pub mod unifi;
 
 #[cfg(any(test, feature = "test-support"))]
 #[doc(hidden)]
@@ -15,10 +13,10 @@ pub mod testing {
 
     use crate::{
         app::UnifiService,
-        config::{McpConfig, UnifiConfig},
+        config::McpConfig,
         mcp::{AppState, AuthPolicy},
-        unifi::UnifiClient,
     };
+    use unifi::{UnifiClient, UnifiConfig};
 
     fn stub_service() -> UnifiService {
         let client = UnifiClient::new(&UnifiConfig {

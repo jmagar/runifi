@@ -1,5 +1,5 @@
 use anyhow::{Result, bail};
-use unifi_rmcp::api::ApiSourceFamily;
+use unifi::api::ApiSourceFamily;
 use unifi_rmcp::capabilities::{AuthScope, Capability, find_capability, official_network};
 
 use crate::endpoint_probe::{

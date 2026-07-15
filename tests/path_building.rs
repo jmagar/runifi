@@ -1,5 +1,5 @@
-use unifi_rmcp::api::internal::InternalNetworkApi;
-use unifi_rmcp::api::official::OfficialNetworkApi;
+use unifi::api::internal::InternalNetworkApi;
+use unifi::api::official::OfficialNetworkApi;
 
 #[test]
 fn official_network_paths_use_integration_prefix() {
@@ -38,12 +38,9 @@ fn legacy_internal_v1_paths_skip_proxy_prefix() {
 #[test]
 fn shared_path_substitution_encodes_segments() {
     let params = serde_json::json!({"siteId": "site one", "clientId": "aa:bb:cc"});
-    let path = unifi_rmcp::api::path::substitute_path(
-        "/v1/sites/{siteId}/clients/{clientId}",
-        &params,
-        &[],
-    )
-    .unwrap();
+    let path =
+        unifi::api::path::substitute_path("/v1/sites/{siteId}/clients/{clientId}", &params, &[])
+            .unwrap();
     assert_eq!(path, "/v1/sites/site%20one/clients/aa%3Abb%3Acc");
 }
 
@@ -60,7 +57,7 @@ fn connector_path_rejects_bypass_shapes() {
         "/proxy/network/integration/v1/info?x=1",
         "/proxy/network/integration/v1/info#x",
     ] {
-        let err = unifi_rmcp::api::path::validate_connector_path(
+        let err = unifi::api::path::validate_connector_path(
             candidate,
             &["/proxy/network/integration/", "/proxy/protect/integration/"],
         )

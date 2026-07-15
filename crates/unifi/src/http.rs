@@ -4,7 +4,7 @@ use anyhow::{Context, Result};
 use reqwest::{Client, Method, StatusCode};
 use serde_json::{json, Value};
 
-use crate::config::UnifiConfig;
+use crate::UnifiConfig;
 
 pub fn client(cfg: &UnifiConfig) -> Result<Client> {
     reqwest::ClientBuilder::new()

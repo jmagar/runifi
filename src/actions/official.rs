@@ -2,9 +2,11 @@ use anyhow::{bail, Context, Result};
 use reqwest::Method;
 use serde_json::{json, Value};
 
-use crate::api::{http, official::OfficialNetworkApi, path, ApiSourceFamily};
 use crate::capabilities::Capability;
-use crate::config::UnifiConfig;
+use unifi::{
+    api::{official::OfficialNetworkApi, path, ApiSourceFamily},
+    http, UnifiConfig,
+};
 
 const CONNECTOR_PREFIXES: &[&str] = &["/proxy/network/integration/", "/proxy/protect/integration/"];
 

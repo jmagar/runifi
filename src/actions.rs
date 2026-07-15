@@ -5,9 +5,8 @@ pub mod official;
 use anyhow::{bail, Result};
 use serde_json::Value;
 
-use crate::api::ApiSourceFamily;
 use crate::capabilities::find_capability;
-use crate::config::UnifiConfig;
+use unifi::{api::ApiSourceFamily, UnifiConfig};
 
 #[derive(Debug, Clone)]
 pub struct ActionRequest {
