@@ -8,6 +8,10 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  # REQUIRED under a compile wrapper (soldr/zccache).
+  CARGO_INCREMENTAL: "0"
+  # Persistent per-runner zccache compile store (replaces the old sccache dir).
+  SOLDR_CACHE_DIR: ${{ github.workspace }}/../.soldr-cache
 
 jobs:
   fmt:
@@ -15,7 +19,8 @@ jobs:
     runs-on: [self-hosted, unraid]
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Install Rust + soldr
+        uses: ./.github/actions/setup-rust-soldr
         with:
           components: rustfmt
       - name: Check formatting
@@ -26,10 +31,10 @@ jobs:
     runs-on: [self-hosted, unraid]
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Install Rust + soldr
+        uses: ./.github/actions/setup-rust-soldr
         with:
           components: clippy
-      - uses: Swatinem/rust-cache@v2
       - name: Clippy
         run: cargo clippy -- -D warnings
 
@@ -38,8 +43,8 @@ jobs:
     runs-on: [self-hosted, unraid]
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
+      - name: Install Rust + soldr
+        uses: ./.github/actions/setup-rust-soldr
       - name: Install cargo-nextest
         uses: taiki-e/install-action@nextest
       - name: Run tests
